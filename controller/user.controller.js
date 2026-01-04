@@ -37,7 +37,7 @@ module.exports.registerPost = async (req, res) => {
 
     res.cookie("tokenUser", user.tokenUser);
 
-    res.redirect("/");
+    res.redirect("/user/info");
 }
 
 //[GET] /user/login
