@@ -1,0 +1,135 @@
+extends ../../../layout/default.pug
+include ../../../mixin/alert.pug
+
+block main
+  +alert-error(5000)
+  +alert-success(5000)
+
+  style.
+    :root {
+      --primary-purple: #7f00ff;
+      --secondary-purple: #e100ff;
+      --bg-light: #f8f9fa;
+    }
+    body {
+      background-color: var(--bg-light);
+    }
+    .edit-card {
+      background: #ffffff;
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      padding: 40px;
+      margin-top: 30px;
+      margin-bottom: 50px;
+    }
+    .page-title {
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 30px;
+      display: inline-block;
+    }
+    .form-label {
+      font-weight: 600;
+      color: #444;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .form-control {
+      border-radius: 12px;
+      border: 2px solid #eee;
+      padding: 12px 15px;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 4px rgba(127, 0, 255, 0.1);
+    }
+    .input-group-text-custom {
+      background: white;
+      border: 2px solid #eee;
+      border-left: none;
+      border-radius: 0 12px 12px 0;
+      color: var(--primary-purple);
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 30px;
+      font-weight: 700;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(127, 0, 255, 0.3);
+      color: white;
+      opacity: 0.9;
+    }
+    .textarea-custom {
+      resize: none;
+    }
+
+  .container
+    .row.justify-content-center
+      .col-12.col-lg-8
+        .edit-card
+          h2.page-title 
+            i.fas.fa-edit.mr-2
+            span Chỉnh sửa Node
+          
+          form(
+            action=`/node/edit/${gatewayId}/${node.nodeId}?_method=PATCH`
+            id="form-edit-node"
+            method="POST"
+          )
+            .row
+              .col-md-6
+                .form-group.mb-4
+                  label.form-label(for="nodeName") Tên Node
+                  input#nodeName.form-control(
+                    type="text"
+                    name="nodeName"
+                    value=node.nodeName
+                    placeholder="Nhập tên thiết bị..."
+                    required
+                  )
+              
+              .col-md-6
+                .form-group.mb-4
+                  label.form-label(for="address") Địa chỉ lắp đặt
+                  .input-group
+                    input#address.form-control(
+                      type="text" 
+                      name="address" 
+                      placeholder="Ví dụ: Quận 9, TP.HCM"
+                      value=node.address
+                      required
+                      style="border-right: none;"
+                    )
+                    .input-group-append
+                        a.btn.btn-light.border.d-flex.align-items-center(
+                            href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(node.address)}`
+                            target="_blank"
+                            title="Xem trên bản đồ"
+                        ) 
+                            i.fas.fa-external-link-alt.mr-2
+                            small Maps
+
+            .form-group.mb-4
+              label.form-label(for="desc") Mô tả chi tiết
+              textarea#desc.form-control.textarea-custom(
+                name="description"
+                rows="4"
+                placeholder="Nhập mô tả về chức năng hoặc ghi chú cho node này..."
+              ) #{node.description}
+
+            .text-right.mt-4
+              a.btn.btn-light.mr-2.px-4(href="javascript:history.back()" style="border-radius: 12px; font-weight: 600;") Hủy
+              button.btn.btn-submit(type="submit") Lưu thay đổi

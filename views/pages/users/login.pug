@@ -1,0 +1,161 @@
+extends ../../layout/default.pug
+include ../../mixin/alert.pug
+
+block main
+    +alert-error(5000)
+
+    .auth-page-wrapper
+        //- Trang trí nền
+        .auth-circle.circle-1
+        .auth-circle.circle-2
+
+        .container
+            .row.justify-content-center.align-items-center.min-vh-100
+                .col-xl-5.col-lg-6.col-md-8
+                    .auth-card-modern.animate__animated.animate__fadeInUp
+                        .auth-header.text-center
+                            .brand-icon-box
+                                i.fas.fa-leaf
+                            h2.auth-title Chào mừng trở lại
+                            p.auth-subtitle Đăng nhập để quản lý hệ thống của bạn
+
+                        form(
+                            action="/user/login" 
+                            method="POST" 
+                            class="auth-form"
+                        )
+                            .form-floating-modern
+                                i.fas.fa-envelope
+                                input(type="email" name="email" id="email" placeholder="Email của bạn" required)
+
+                            .form-floating-modern
+                                i.fas.fa-lock
+                                input(type="password" name="password" id="password" placeholder="Mật khẩu" required)
+                                .toggle-password#togglePassword
+                                    i.fas.fa-eye
+
+                            .auth-options.d-flex.justify-content-between.mb-4
+                                .custom-check
+                                    input(type="checkbox" name="rememberMe" id="rememberMe")
+                                    label(for="rememberMe") Ghi nhớ tôi
+                                a(href="/user/password/forgot" class="forgot-link") Quên mật khẩu?
+
+                            button(type="submit" class="btn-auth-submit")
+                                span ĐĂNG NHẬP
+                                i.fas.fa-arrow-right
+
+                        .auth-footer.text-center.mt-5
+                            p 
+                                | Bạn chưa có tài khoản? 
+                                a(href="/user/register") Đăng ký ngay
+
+    style.
+        :root {
+            --primary-gradient: linear-gradient(90deg, #95a6eeff 0%, #764ba2 100%);
+            --dark-blue: #1e293b;
+            --glass-white: rgba(255, 255, 255, 0.9);
+        }
+
+        .auth-page-wrapper {
+            position: relative;
+            background: #f8fafc;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Background Orbs */
+        .auth-circle {
+            position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0;
+        }
+        .circle-1 { width: 400px; height: 400px; background: rgba(79, 172, 254, 0.2); top: -100px; right: -50px; }
+        .circle-2 { width: 300px; height: 300px; background: rgba(0, 242, 254, 0.15); bottom: -50px; left: -50px; }
+
+        /* Card Style */
+        .auth-card-modern {
+            position: relative; z-index: 1;
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 40px;
+            padding: 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-icon-box {
+            width: 60px; height: 60px; background: var(--primary-gradient);
+            border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 24px; margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .auth-title { font-weight: 800; color: var(--dark-blue); font-size: 1.75rem; }
+        .auth-subtitle { color: #64748b; margin-bottom: 40px; }
+
+        /* Container cha */
+        .form-floating-modern {
+            position: relative; 
+            margin-bottom: 25px; 
+            display: flex; 
+            align-items: center;
+        }
+
+        /* Icon khóa bên trái */
+        .form-floating-modern i:not(.fa-eye):not(.fa-eye-slash) {
+            position: absolute; 
+            left: 20px; 
+            z-index: 2; /* Nằm trên input */
+            color: #94a3b8;
+        }
+
+        /* Ô Input */
+        .form-floating-modern input {
+            width: 100%; 
+            padding: 18px 50px 18px 55px; /* 50px bên phải để nhường chỗ cho con mắt */
+            background: #f1f5f9; 
+            border: 2px solid transparent;
+            border-radius: 18px; 
+            outline: none; 
+            transition: 0.3s;
+            font-weight: 600;
+            z-index: 1; /* Nằm dưới icon */
+        }
+
+        /* NÚT CON MẮT NẰM ĐÈ LÊN TRÊN */
+        .toggle-password {
+            position: absolute;
+            right: 15px; /* Cách mép phải input 15px */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3; /* Nằm trên cùng nhất */
+            cursor: pointer;
+            padding: 5px;
+            color: #94a3b8;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password:hover {
+            color: #4facfe;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Checkbox & Links */
+        .forgot-link { color: #4facfe; font-weight: 600; text-decoration: none; font-size: 0.9rem; }
+        .custom-check label { cursor: pointer; color: #64748b; font-size: 0.9rem; margin-left: 8px; }
+
+        /* Submit Button */
+        .btn-auth-submit {
+            width: 100%; padding: 18px; border: none; border-radius: 18px;
+            background: var(--dark-blue); color: white; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            transition: 0.4s; cursor: pointer;
+        }
+        .btn-auth-submit:hover {
+            background: linear-gradient(90deg, #4facfe, #00f2fe); transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .auth-footer a { color: #4facfe; font-weight: 700; text-decoration: none; }

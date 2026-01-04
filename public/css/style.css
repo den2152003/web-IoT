@@ -1,0 +1,636 @@
+html {
+  scroll-behavior: smooth;
+}
+.w-auto {
+    width: auto !important; /* Ghi đè mọi thuộc tính width khác */
+}
+.main-content {
+  /* Giả sử block main của bạn được bao bọc bởi class này */
+  /* Quan trọng: Sử dụng flex-grow để chiếm hết không gian còn lại */
+  flex-grow: 1;
+}
+
+html {
+  height: 100%;
+}
+
+/* Nền web */
+body {
+  /* 1. Đặt ảnh nền */
+  /* background-image: url('/images/background-web-6.jpg'); */
+
+  /* 2. Đảm bảo ảnh nền bao phủ toàn bộ */
+  background-size: cover;
+
+  /* 3. Ngăn ảnh nền lặp lại */
+  background-repeat: no-repeat;
+
+  /* 4. Giữ ảnh nền cố định khi cuộn */
+  background-attachment: fixed;
+
+  /* 5. Đặt màu nền dự phòng */
+  background-color: #F5F5F5;
+
+  min-height: 100vh;
+
+  /* Thiết lập Flex container theo chiều dọc */
+  display: flex;
+  flex-direction: column;
+
+  /* Đảm bảo không có margin/padding mặc định gây lỗi cuộn */
+  margin: 0;
+  padding: 20;
+}
+
+.feature-section {
+  /* 1. Đặt ảnh nền thứ hai */
+  /*background-image: url('/images/background-web-4.jpg'); /* Thay thế bằng đường dẫn ảnh thứ hai của bạn */
+
+  /* 2. Đảm bảo ảnh nền bao phủ toàn bộ */
+  background-size: cover;
+
+  /* 3. Ngăn ảnh nền lặp lại */
+  background-repeat: no-repeat;
+
+  /* 4. Giữ ảnh nền cố định khi cuộn (Hiệu ứng Parallax) */
+  background-attachment: fixed;
+
+  /* 5. Đảm bảo nội dung nổi bật */
+  padding: 80px 0;
+  position: relative;
+  /* Quan trọng để backdrop-filter hoạt động chính xác */
+  background-color: #f0e4f6;
+
+}
+
+/* End Nền web */
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1050;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+  padding: 0px 0;
+}
+
+.header .inner-logo img {
+  max-height: 70px;
+  max-width: 100%;
+}
+
+.header .inner-menu>ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.header .inner-menu>ul>li {
+  margin-left: 20px;
+  color: black;
+}
+
+/* CSS chỉnh màu chữ trong Header */
+.header .inner-menu ul li a {
+  color: #000000;
+  /* Đặt màu chữ thành đen */
+  /* Nếu menu bị gạch chân, bạn có thể thêm: */
+  text-decoration: none;
+}
+
+/* Tùy chọn: Chỉnh màu khi rê chuột (hover) nếu cần */
+.header .inner-menu ul li a:hover {
+  color: #DE4396;
+  /* Ví dụ: Đen đậm hơn một chút */
+  text-decoration: underline;
+}
+
+/* End Header */
+
+/* Footer */
+
+/* Chỉnh màu nền cho Footer 
+/*.footer {
+    background-color: #ffffff; 
+    border-top: 1px solid #dee2e6;
+}
+*/
+
+/* Đảm bảo các liên kết vẫn có màu đen và nổi bật khi hover */
+.footer a {
+  color: #727070 !important;
+  /* Đảm bảo màu liên kết là đen */
+}
+
+.footer a:hover {
+  color: #007bff !important;
+  /* Màu xanh khi hover */
+}
+
+.footer a:hover {
+  color: #DE4396 !important;
+  /* Màu xanh khi hover, bạn có thể thay đổi */
+    text-decoration: underline;
+}
+
+.footer .social-icons a {
+  transition: color 0.3s ease;
+}
+
+.footer .social-icons a:hover {
+  color: black !important;
+  /* Màu xám nhạt hơn khi hover */
+}
+
+.footer h5 {
+  letter-spacing: 0.05em;
+}
+
+
+.footer.text-white {
+  color: white !important;
+}
+
+/* End Footer */
+
+/* box-head */
+.box-head {
+  margin-bottom: 30px;
+}
+
+.box-head .inner-title {
+  margin-bottom: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #DE4396;
+}
+
+/* End box-head */
+
+/* Text Trang chủ */
+.hero-section {
+  min-height: 100vh;
+  padding: 125px 0;
+  margin-top: 10px;
+}
+
+.hero-headline .text-1 {
+  font-size: 2.2vw;
+  color: #DE4396;
+}
+
+.hero-headline .text-2 {
+  padding-top: 2vw;
+  font-size: 1vw;
+  font-weight: 700;
+}
+
+/* End Text Trang chủ */
+
+/* Card tính năng trang chủ */
+.feature-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 30px 20px;
+  border-radius: 12px;
+  height: 100%;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  transition: all 0.4s ease-in-out;
+}
+
+/* HIỆU ỨNG RÊ CHUỘT (HOVER EFFECT) */
+.feature-card:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  /* Chuyển sang màu trắng gần như đặc */
+  backdrop-filter: blur(0);
+  /* Loại bỏ hiệu ứng mờ */
+  -webkit-backdrop-filter: blur(0);
+
+  border-color: #9d107f;
+  /* Viền màu thương hiệu */
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  /* Shadow nổi bật hơn */
+  transform: translateY(-8px);
+  /* Card hơi nhô lên */
+}
+
+/* ĐỊNH DẠNG ICON/EMOJI */
+/* Khi ở trạng thái Frosted Glass, chữ và icon cần rõ ràng hơn */
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #E84D3C;
+  /* Màu sắc nổi bật */
+  transition: color 0.4s ease-in-out;
+}
+
+.feature-heading {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #0e0d0d;
+  /* CHỮ MÀU TRẮNG khi ở trạng thái Frosted Glass */
+  transition: color 0.4s ease-in-out;
+}
+
+.feature-description {
+  color: rgba(25, 23, 23, 0.8);
+  /* CHỮ MÀU TRẮNG NHẸ khi ở trạng thái Frosted Glass */
+  font-size: 1rem;
+  transition: color 0.4s ease-in-out;
+}
+
+/* ĐIỀU CHỈNH CHỮ KHI HOVER (Chuyển về màu đen) */
+.feature-card:hover .feature-heading {
+  color: #343a40;
+  /* Chữ màu đen đậm khi hover */
+}
+
+.feature-card:hover .feature-description {
+  color: #495057;
+  /* Chữ màu xám đậm khi hover */
+}
+
+/* End Card tính năng trang chủ */
+
+/* Lợi ích khách hàng Home */
+.benefits-section .benefit-icon i {
+  /* Tăng kích thước biểu tượng */
+  font-size: 2.5rem !important;
+}
+
+.benefit-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+  /* Hiệu ứng nổi nhẹ khi di chuột */
+  box-shadow: 0 1rem 3rem rgba(130, 25, 104, 0.175) !important;
+}
+
+.benefits-section h2 {
+  color: #333;
+  /* Màu tối hơn cho tiêu đề */
+}
+
+/* End Lợi ích khách hàng Home */
+
+/* Login */
+.login-card .btn-danger {
+  background-color: #DE4396;
+  border-color: white;
+}
+
+/* End Login */
+
+
+/* register */
+.register-card .btn-danger {
+  background-color: #DE4396;
+  border-color: white;
+}
+
+/* End Register */
+
+/* Info */
+.user-info-card .card-header {
+  /* Đảm bảo màu nền phù hợp với chủ đề của bạn (ví dụ: màu đỏ/cam của logo) */
+  background-color: #DE4396 !important;
+  /* Màu đỏ Bootstrap/hoặc màu chủ đạo của bạn */
+  border-bottom: none;
+}
+
+/* End Info */
+
+/* Project */
+
+
+/* End Project */
+
+/*
+/* Node */
+
+
+.section-card {
+  background-color: white !important;
+
+  max-width: 1300px;
+  width: 100%;
+  padding: 20px 20px 20px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Thiết lập margin trên-dưới là 0, trái-phải là auto để căn giữa */
+  margin: 0 auto;
+
+  /* Thêm khoảng cách phía dưới để tách card */
+  margin-bottom: 20px
+}
+
+/* Map */
+#map-content { 
+  width: 80%;
+  height: 500px; 
+  margin: 20px auto;
+}
+
+/* End Map */
+/* End Node */
+
+/* Show Alert */
+[show-alert] {
+  position: fixed;
+  top: 70px;
+  right: 15px;
+  z-index: 9999;
+}
+
+[show-alert].alert-hidden {
+  animation-name: alert-hidden;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+@keyframes alert-hidden {
+  from {
+    right: 15px;
+  }
+
+  to {
+    right: -100%;
+    display: none;
+  }
+}
+
+[show-alert] [close-alert] {
+  background: #ffffffc4;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Node */
+.node-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.node-actions {
+  margin-bottom: 20px;
+  display: flex;
+  /* Sắp xếp các nút cạnh nhau */
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.section-card {
+  background-color: #f8f8f8;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+}
+
+/* Căn chỉnh Chi tiết Thiết bị/Lịch/Điều kiện */
+.device-item {
+  padding: 10px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.device-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+
+
+
+/* End Toggle Switch */
+
+
+/* Container bao quanh bộ lọc */
+.filter-sensor-wrapper {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 5px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Từng item trong bộ lọc */
+.filter-sensor-item {
+    border: none;
+    background: transparent;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #636e72;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.filter-sensor-item i {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* Trạng thái khi di chuột qua */
+.filter-sensor-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    color: #2d3436;
+    transform: translateY(-1px);
+}
+
+/* Trạng thái Active (Khi được chọn) */
+.filter-sensor-item.active {
+    background: #ffffff;
+    color: #4e73df; /* Màu primary */
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.15);
+}
+
+/* Hiệu ứng màu riêng cho từng loại khi Active (Tùy chọn) */
+.filter-sensor-item.active[button-status-sensor="temperature"] {
+    color: #e74c3c;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+}
+
+.filter-sensor-item.active[button-status-sensor="humidity"] {
+    color: #3498db;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+.filter-sensor-item.active[button-status-sensor="light"] {
+    color: #e4f372;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+.filter-sensor-item.active[button-status-sensor="airQuality"] {
+    color: #39393d;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+/* Container bao quanh bộ lọc biểu đồ */
+.chart-filter-glass {
+    display: inline-flex;
+    background: rgba(241, 242, 246, 0.8);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(223, 230, 233, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Từng nút lựa chọn */
+.chart-filter-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #636e72;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+/* Chấm tròn báo hiệu (ẩn mặc định) */
+.status-indicator-dot {
+    width: 0;
+    height: 6px;
+    background: #4e73df;
+    border-radius: 50%;
+    margin-right: 0;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+/* Hiệu ứng khi di chuột */
+.chart-filter-btn:hover {
+    color: #2d3436;
+}
+
+/* Trạng thái Active (Nút đang được chọn) */
+.chart-filter-btn.active {
+    background: #ffffff;
+    color: #4e73df;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chart-filter-btn.active .status-indicator-dot {
+    width: 6px;
+    margin-right: 8px;
+    opacity: 1;
+}
+
+/* Tùy chỉnh cho thiết bị di động */
+@media (max-width: 576px) {
+    .chart-filter-glass {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .chart-filter-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 5px;
+        font-size: 12px;
+    }
+}
+
+/* filter status */
+/* Container bao bọc */
+.status-nav-container {
+    display: inline-flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 6px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Nút trạng thái */
+.status-nav-item {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #7f8c8d;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Hiệu ứng chữ khi Hover */
+.status-nav-item:hover {
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* Trạng thái Active */
+.status-nav-item.active {
+    color: #4e73df; /* Màu chính của hệ thống */
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.12);
+    font-weight: 700;
+}
+
+/* Thanh trượt nhỏ ở dưới nút khi active */
+.nav-active-bar {
+    position: absolute;
+    bottom: 4px;
+    width: 0;
+    height: 3px;
+    background: #4e73df;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.status-nav-item.active .nav-active-bar {
+    width: 20px;
+}
+
+/* Đổi màu riêng cho trạng thái "Hoạt động" (nếu muốn) */
+.status-nav-item.active[button-status="active"] {
+    color: #2ecc71;
+}
+.status-nav-item.active[button-status="active"] .nav-active-bar {
+    background: #2ecc71;
+}
+/* end filter status */

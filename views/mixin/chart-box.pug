@@ -1,0 +1,16 @@
+mixin chartBox(id, label, valueId, unit, icon, color)
+    .chart-card-v2.mb-4
+        .chart-header-v2
+            .d-flex.align-items-center
+                .icon-box(class=`bg-soft-${color}`)
+                    i.fas(class=icon)
+                .ml-3
+                    h6.mb-0.text-muted #{label}
+                    h3.mb-0.font-weight-bold
+                        span(id=valueId) --.-
+                        small.ml-1 #{unit}
+        .chart-body-v2
+            .no-data-card(style="display: none;")
+                p.text-center.py-5.text-muted Không có dữ liệu
+            .chart-wrapper(style="height:300px")
+                canvas(id=id)

@@ -1,0 +1,119 @@
+extends ../../layout/default.pug
+include ../../mixin/alert.pug
+
+block main
+    +alert-error(5000)
+    +alert-success(5000)
+
+    style.
+        .form-container { max-width: 700px; margin: 40px auto; }
+        .card-custom { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        .upload-avatar { position: relative; width: 120px; height: 120px; margin: 0 auto 2rem; }
+        .upload-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .upload-avatar label { position: absolute; bottom: 0; right: 0; background: #007bff; color: #fff; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .upload-avatar label:hover { transform: scale(1.1); background: #0056b3; }
+        .form-control { border-radius: 12px; padding: 12px 15px; border: 1px solid #e1e5eb; background-color: #f8f9fa; transition: all 0.3s; }
+        .form-control:focus { background-color: #fff; box-shadow: 0 0 0 4px rgba(0,123,255,0.1); border-color: #007bff; }
+        .btn-update { border-radius: 12px; padding: 12px; font-weight: 600; letter-spacing: 0.5px; transition: all 0.3s; background: linear-gradient(90deg, #764ba2 0%, #95a6eeff 100% ); border: none; }
+        .btn-update:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
+
+    .container
+        .form-container
+            .card-custom.bg-white
+                .card-body.p-5
+                    .text-center.mb-4
+                        h3.font-weight-bold.text-dark Chỉnh sửa hồ sơ
+                        p.text-muted Cập nhật thông tin để bảo mật tài khoản tốt hơn
+                    
+                    form(
+                        action=`/user/edit/${user._id}?_method=PATCH`
+                        id="form-edit-user"
+                        method="POST"
+                        enctype="multipart/form-data"
+                    )
+                        //- Phần Ảnh đại diện (Thêm mới)
+                        .upload-avatar(upload-image)
+                            img(
+                                src=(user.avatar ? user.avatar : "/images/default-avatar.png")
+                                upload-image-preview
+                                alt="Avatar"
+                            )
+                            label(for="avatar")
+                                i.fas.fa-camera
+                            input(
+                                type="file"
+                                id="avatar"
+                                name="avatar"
+                                class="d-none"
+                                accept="image/*"
+                                upload-image-input
+                            )
+
+                        .row
+                            .col-md-12
+                                div(class="form-group mb-4")
+                                    label.small.text-uppercase.font-weight-bold.text-muted Họ và tên
+                                    input(
+                                        type="text"
+                                        class="form-control"
+                                        id="fullName"
+                                        name="fullName"
+                                        value=user.fullName
+                                        required
+                                    )
+
+                            .col-md-12
+                                div(class="form-group mb-4")
+                                    label.small.text-uppercase.font-weight-bold.text-muted Email
+                                    input(
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                        name="email"
+                                        value=user.email
+                                        required
+                                    )
+
+                            .col-md-6
+                                div(class="form-group mb-4")
+                                    label.small.text-uppercase.font-weight-bold.text-muted Ngày sinh
+                                    input(
+                                        type="date"
+                                        class="form-control"
+                                        id="birthday"
+                                        name="birthday"
+                                        value=(user.birthday ? user.birthday.toISOString().substr(0, 10) : "")
+                                    )
+
+                            .col-md-6
+                                div(class="form-group mb-4")
+                                    label.small.text-uppercase.font-weight-bold.text-muted Địa chỉ
+                                    input(
+                                        type="text"
+                                        class="form-control"
+                                        id="address"
+                                        name="address"
+                                        value=user.address
+                                        placeholder="Vd: Hà Nội, Việt Nam"
+                                    )
+
+                        .mt-4
+                            button(
+                                type="submit"
+                                class="btn btn-primary btn-block btn-update"
+                            ) Lưu thay đổi
+
+    //- Script để preview ảnh ngay lập tức
+    script.
+        const uploadImage = document.querySelector("[upload-image]");
+        if(uploadImage) {
+            const uploadImageInput = uploadImage.querySelector("[upload-image-input]");
+            const uploadImagePreview = uploadImage.querySelector("[upload-image-preview]");
+
+            uploadImageInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    uploadImagePreview.src = URL.createObjectURL(file);
+                }
+            });
+        }

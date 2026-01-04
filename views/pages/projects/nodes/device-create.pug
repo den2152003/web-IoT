@@ -1,0 +1,203 @@
+extends ../../../layout/default.pug
+include ../../../mixin/alert.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+
+  .form-page-wrapper
+    .container
+      .row.justify-content-center
+        .col-lg-7.col-md-9
+          // --- Nút Quay Lại ---
+          a(href=`javascript:history.back()` class="btn-back mb-4")
+            i.fas.fa-arrow-left.mr-2
+            | Quay lại bảng điều khiển
+
+          // --- Card Chính ---
+          .form-card-modern.animate__animated.animate__fadeInUp
+            .card-header-gradient
+              .header-icon
+                i.fas.fa-plus-circle
+              .header-text
+                h2.title Thêm thiết bị mới
+                p.subtitle Kết nối thiết bị ngoại vi vào hệ thống Smart Farm
+
+            .card-body-modern
+              form(
+                action=`/node/device/create`
+                id="form-create-device"
+                method="POST"
+              )
+                input(type="hidden" name="gatewayId" value=gatewayId)
+                input(type="hidden" name="nodeId" value=nodeId)
+
+                .row
+                  // Tên thiết bị
+                  .col-md-8
+                    .form-floating-custom.mb-4
+                      label(for="deviceName") 
+                        i.fas.fa-tag.mr-2
+                        | Tên thiết bị
+                      input(
+                        type="text"
+                        class="form-control-modern"
+                        id="deviceName"
+                        name="deviceName"
+                        placeholder="VD: Máy bơm nước, Đèn sưởi..."
+                        required
+                      )
+                  
+                  // Chân (Pin)
+                  .col-md-4
+                    .form-floating-custom.mb-4
+                      label(for="pin") 
+                        i.fas.fa-microchip.mr-2
+                        | Chân PIN
+                      input(
+                        type="number"
+                        class="form-control-modern"
+                        id="pin"
+                        name="pin"
+                        placeholder="VD: 12"
+                        required
+                      )
+
+                // Mô tả
+                .form-floating-custom.mb-4
+                  label(for="desc") 
+                    i.fas.fa-align-left.mr-2
+                    | Mô tả thiết bị
+                  textarea(
+                    class="form-control-modern text-area-modern"
+                    id="desc"
+                    name="description"
+                    rows="4"
+                    placeholder="Nhập ghi chú về vị trí hoặc chức năng thiết bị..."
+                  )
+
+                // Hành động
+                .form-actions.mt-5
+                  button(type="submit" class="btn-submit-premium")
+                    span Xác nhận tạo thiết bị
+                    i.fas.fa-paper-plane.ml-2
+
+  style.
+    :root {
+      --primary-color: #4e73df;
+      --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --bg-light: #f8f9fc;
+      --text-dark: #2d3436;
+    }
+
+    .form-page-wrapper {
+      background: #f0f2f5;
+      min-height: 90vh;
+      padding: 50px 0;
+    }
+
+    /* Nút Quay Lại */
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      color: #636e72;
+      font-weight: 500;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .btn-back:hover {
+      color: var(--primary-color);
+      transform: translateX(-5px);
+    }
+
+    /* Card Modern */
+    .form-card-modern {
+      background: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border: none;
+    }
+
+    .card-header-gradient {
+      background: var(--secondary-gradient);
+      padding: 40px;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-icon {
+      width: 60px; height: 60px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-right: 20px;
+      backdrop-filter: blur(5px);
+    }
+
+    .title { font-weight: 700; margin: 0; font-size: 1.6rem; }
+    .subtitle { margin: 5px 0 0; opacity: 0.8; font-size: 0.9rem; }
+
+    /* Card Body */
+    .card-body-modern { padding: 50px; }
+
+    /* Form Elements */
+    .form-floating-custom label {
+      display: block;
+      font-weight: 600;
+      color: #4a4a4a;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .form-control-modern {
+      width: 100%;
+      padding: 14px 20px;
+      background: #f8f9fa;
+      border: 2px solid transparent;
+      border-radius: 15px;
+      font-size: 1rem;
+      color: var(--text-dark);
+      transition: all 0.3s ease;
+    }
+
+    .form-control-modern:focus {
+      background: #fff;
+      border-color: #667eea;
+      outline: none;
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.1);
+    }
+
+    .text-area-modern { resize: none; }
+
+    /* Button Premium */
+    .btn-submit-premium {
+      width: 100%;
+      background: var(--secondary-gradient);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 18px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 8px 20px rgba(118, 75, 162, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-submit-premium:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(118, 75, 162, 0.4);
+    }
+
+    .btn-submit-premium:active { transform: scale(0.98); }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+      .card-body-modern { padding: 30px 20px; }
+      .card-header-gradient { padding: 30px 20px; }
+    }

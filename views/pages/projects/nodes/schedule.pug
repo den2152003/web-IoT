@@ -1,0 +1,146 @@
+extends ../../../layout/default.pug
+include ../../../mixin/alert.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+
+  .schedule-wrapper
+    .container
+      .row.justify-content-center
+        .col-xl-5.col-lg-7
+          .schedule-card.animate__animated.animate__fadeInUp
+            // Header
+            .schedule-header
+              .header-icon-ring
+                i.fas.fa-calendar-check
+              h2 Cài đặt lịch trình
+              p Thiết lập thời gian tự động cho thiết bị
+
+            form(
+              action=`/node/device/schedule/${gatewayId}/${nodeId}/${deviceId}`
+              id="form-create-project"
+              method="POST"
+              class="schedule-form"
+            )
+              // Section: Thời gian
+              .form-section
+                label 
+                  i.fas.fa-clock.mr-2
+                  | Thời điểm thực hiện
+                .time-picker-grid
+                  .input-custom-group
+                    span Ngày bắt đầu
+                    input(type="date" name="startDate" required)
+                  .input-custom-group
+                    span Giờ chạy
+                    input(type="time" name="startTime" required)
+
+              // Section: Hành động & Lặp lại
+              .form-section.mt-4
+                label 
+                  i.fas.fa-cog.mr-2
+                  | Cấu hình lệnh
+                .action-toggle-group
+                  // Custom Select (Bật/Tắt)
+                  .select-wrapper-modern
+                    select(name="status" id="status" required)
+                      option(disabled selected) Chọn trạng thái...
+                      option(value="active") 🟢 Bật thiết bị
+                      option(value="unactive") 🔴 Tắt thiết bị
+                  
+                  // Custom Checkbox (Hằng ngày)
+                  .repeat-box
+                    input(type="checkbox" id="isEveryDay" name="isEveryDay")
+                    label(for="isEveryDay")
+                      .checkbox-ui
+                        i.fas.fa-check
+                      span Lặp lại hằng ngày
+
+              // Submit
+              .form-footer.mt-5
+                button(type="submit" class="btn-create-schedule")
+                  span XÁC NHẬN CÀI ĐẶT
+                  i.fas.fa-plus-circle
+                  
+    style. 
+        :root {
+            --primary-blue: #4facfe;
+            --primary-purple: #00f2fe;
+            --glass-white: rgba(255, 255, 255, 0.85);
+            --text-main: #2d3436;
+        }
+
+        .schedule-wrapper {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .schedule-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+        }
+
+        .schedule-header { text-align: center; margin-bottom: 35px; }
+        
+        .header-icon-ring {
+            width: 70px; height: 70px; margin: 0 auto 15px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 24px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 28px; box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+        .schedule-header h2 { font-weight: 800; color: var(--text-main); font-size: 1.5rem; }
+        .schedule-header p { color: #636e72; font-size: 0.9rem; }
+
+        .time-picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .input-custom-group {
+        background: #ffffff;
+        padding: 12px 15px;
+        border-radius: 20px;
+        border: 1px solid #edf2f7;
+        transition: 0.3s;
+        }
+        .input-custom-group:focus-within { border-color: var(--primary-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .input-custom-group span { display: block; font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; margin-bottom: 5px; }
+        .input-custom-group input { border: none; width: 100%; font-weight: 600; color: var(--text-main); outline: none; }
+
+        /* Select & Checkbox Custom */
+        .select-wrapper-modern select {
+        width: 100%; padding: 15px; border-radius: 20px; border: 1px solid #edf2f7;
+        background: white; font-weight: 600; color: var(--text-main); outline: none; cursor: pointer;
+        }
+
+        .repeat-box {
+        margin-top: 20px; display: flex; align-items: center;
+        }
+        .repeat-box input { display: none; }
+        .repeat-box label { display: flex; align-items: center; cursor: pointer; margin: 0; }
+        .checkbox-ui {
+        width: 24px; height: 24px; border: 2px solid #cbd5e0; border-radius: 8px;
+        margin-right: 12px; display: flex; align-items: center; justify-content: center;
+        transition: 0.3s; color: white;
+        }
+        .repeat-box input:checked + label .checkbox-ui {
+        background: var(--primary-blue); border-color: var(--primary-blue);
+        }
+        .repeat-box span { font-weight: 600; color: var(--text-main); }
+
+        .btn-create-schedule {
+        width: 100%; background: var(--text-main); color: white;
+        border: none; padding: 20px; border-radius: 22px;
+        font-weight: 700; display: flex; align-items: center; justify-content: center;
+        gap: 12px; transition: 0.4s; cursor: pointer;
+        }
+        .btn-create-schedule:hover {
+        background: #000; transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }

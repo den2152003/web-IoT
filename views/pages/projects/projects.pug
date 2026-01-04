@@ -1,0 +1,193 @@
+extends ../../layout/default.pug
+include ../../mixin/filter-status.pug
+include ../../mixin/search.pug
+include ../../mixin/pagination.pug
+include ../../mixin/alert.pug
+
+block main
+  style.
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    }
+    body { background: #f0f2f5; font-family: 'Inter', sans-serif; }
+    .main-content { padding: 20px 20px; }
+    
+    /* Header Animation */
+    .page-header { position: relative; margin-bottom: 3rem; }
+    .page-title { font-weight: 850; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; }
+    
+    /* Glass Card Style */
+    .project-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border-color: #6366f1;
+    }
+    
+    /* Status LED Pulse */
+    .status-pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: #10b981;
+      display: inline-block; margin-right: 8px;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Action Buttons Floating */
+    .action-floating {
+      position: absolute; top: 15px; right: 15px;
+      display: flex; gap: 8px; opacity: 0; transition: 0.3s;
+    }
+    .project-card:hover .action-floating { opacity: 1; }
+    .btn-glass {
+      background: rgba(255,255,255,0.8); width: 35px; height: 35px;
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      color: #1e293b; border: 1px solid #e2e8f0;
+    }
+    .btn-glass:hover { background: #fff; color: #6366f1; transform: scale(1.1); }
+
+    /* Search Bar Modern */
+    .search-wrapper {
+      background: white; border-radius: 15px; padding: 5px 15px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+
+  .main-content
+    .container
+      +alert-success(5000)
+      +alert-error(5000)
+
+      //- Top Navigation Area
+      .d-flex.justify-content-between.align-items-end.mb-5
+        .page-header
+          span.badge.badge-pill.badge-soft-primary.mb-2 Tổng quan hệ thống
+          h1.page-title Project Hub
+          p.text-muted Quản lý tập trung các thiết bị ngoại vi và Gateway.
+        
+        a.btn.btn-primary.btn-lg(
+          href=`/project/create`
+          style="border-radius: 16px; background: var(--primary-gradient); border: none; padding: 12px 30px; font-weight: 600; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);"
+        ) 
+          i.fas.fa-plus.mr-2
+          | Thêm dự án
+
+      //- Filters & Search
+      .row.mb-5
+        .col-lg-8
+          .search-wrapper
+            +search(keyword)
+        .col-lg-4.d-flex.align-items-center.justify-content-end
+          .text-muted.font-weight-medium
+            i.fas.fa-layer-group.mr-2
+            | Total: 
+            span.text-dark.font-weight-bold #{totalProject} Projects
+
+      //- Projects Grid (Thay thế cho Table)
+      .row
+        if gateway.length > 0
+          each item, index in gateway
+            .col-md-6.col-xl-4.mb-4
+              .project-card.p-4
+                //- Floating Actions
+                .action-floating
+                  a.btn-glass(href=`/project/edit/${item.gatewayId}` title="Edit")
+                    i.fas.fa-pencil-alt.fa-sm
+                  button.btn-glass(button-delete-gateway data-id-gateway=item._id title="Delete")
+                    i.fas.fa-trash-alt.fa-sm.text-danger
+
+                //- Card Content
+                .d-flex.align-items-center.mb-3
+                  .icon-box.mr-3(style="width: 50px; height: 50px; background: #eef2ff; border-radius: 14px; display: flex; align-items: center; justify-content: center;")
+                    i.fas.fa-microchip.text-primary.fa-lg
+                  div
+                    h5.font-weight-bold.mb-0.text-dark #{item.projectName}
+                    small.text-muted
+                      i.far.fa-calendar-alt.mr-1
+                      | #{item.createdAt ? item.createdAt.toLocaleDateString('vi-VN') : 'N/A'}
+
+                .gateway-info.p-3.mb-3(style="background: rgba(248,250,252,0.8); border-radius: 16px; border: 1px solid #f1f5f9;")
+                  .d-flex.justify-content-between.align-items-center.mb-2
+                    span.small.text-secondary Gateway Name
+                    span.status-pulse
+                  h6.font-weight-bold.text-indigo.mb-0 #{item.gatewayName}
+
+                p.small.text-muted.mb-4(style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 40px;")
+                  | Mô tả: #{item.description || 'Không có mô tả cho dự án này.'}
+
+                .d-flex.justify-content-between.align-items-center
+                  button.btn.btn-link.p-0.text-decoration-none.font-weight-bold(
+                    data-toggle="modal" 
+                    data-target="#projectDetail" 
+                    data-project-name=item.projectName
+                    data-address=item.address
+                    data-gateway-name=item.gatewayName
+                    data-description=item.description
+                    data-date-created=item.createdAt ? item.createdAt.toLocaleDateString('vi-VN') : ''
+                    data-nodenumber= item.nodeNumber || 0
+                    style="font-size: 0.85rem; color: #6366f1;"
+                  ) Xem chi tiết →
+                  
+                  a.btn.btn-sm.btn-indigo.px-3(
+                    href=`/project/manage/${item.gatewayId}`
+                    style="background: #eef2ff; color: #4338ca; border-radius: 10px; font-weight: 600;"
+                  ) Quản lý Nodes
+        else
+          .col-12.text-center.py-5
+            img(src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 120px; opacity: 0.2")
+            h5.mt-4.text-muted Empty Workspace
+
+      .mt-5
+        +pagination(pagination)
+
+    //- Modal & Scripts (Giữ nguyên ID của bạn để Script không lỗi)
+    form(action="", method="post", id="form-delete-item", data-path-gateway="/project/delete")
+
+    #projectDetail.modal.fade(tabindex="-1" role="dialog" aria-hidden="true")
+      .modal-dialog.modal-dialog-centered
+        .modal-content(style="border-radius: 30px; border: none; overflow: hidden;")
+          .modal-body.p-0
+            .header-gradient.p-5.text-white.text-center(style="background: var(--primary-gradient)")
+              i.fas.fa-project-diagram.fa-3x.mb-3
+              h3#projectName.font-weight-bold [Tên Dự án]
+              p.opacity-75#gatewayName 🛰️ Gateway: [Tên Gateway]
+            
+            .p-5
+              .row.text-center
+                .col-4
+                  small.text-muted.d-block Created At
+                  span#dateCreated.font-weight-bold.text-dark --/--
+                .col-4
+                  small.text-muted.d-block Nodes
+                  span#numNode.badge.badge-indigo.badge-pill --
+                .col-4
+                  small.text-muted.d-block Status
+                  span.text-success.font-weight-bold Online
+              
+              hr.my-4
+              
+              .info-group.mb-3
+                label.small.text-uppercase.font-weight-bold.text-muted 📍 Địa chỉ
+                p#address.text-dark.font-weight-medium [Địa chỉ]
+              
+              .info-group
+                label.small.text-uppercase.font-weight-bold.text-muted 📝 Mô tả
+                p#description.text-muted.bg-light.p-3.rounded-lg [Mô tả]
+            
+            .p-4.bg-light.text-center
+              button.btn.btn-dark.px-5(data-dismiss="modal" style="border-radius: 15px;") Đóng cửa sổ

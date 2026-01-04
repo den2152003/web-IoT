@@ -1,0 +1,9 @@
+mixin filter-status(filterStatus)
+  .status-nav-container
+    each item in filterStatus
+      button(
+        class=`status-nav-item ${item.class}`
+        button-status= item.status
+      ) 
+        span.nav-text #{item.name}
+        span.nav-active-bar

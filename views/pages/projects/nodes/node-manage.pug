@@ -1,0 +1,427 @@
+extends ../../../layout/default.pug
+include ../../../mixin/alert.pug
+include ../../../mixin/filter-status.pug
+include ../../../mixin/filter-status-sensor.pug
+include ../../../mixin/filter-status-chart.pug
+include ../../../mixin/pagination.pug
+include ../../../mixin/search.pug
+include ../../../mixin/chart-box.pug
+
+block main
+    +alert-success(5000)
+    +alert-error(5000)
+
+    .dashboard-wrapper
+        .container-fluid.py-4
+            // --- HEADER SECTION ---
+            .header-glass.mb-4.animate__animated.animate__fadeInDown
+                .row.align-items-center
+                    .col-md-6
+                        .d-flex.align-items-center
+                            .header-icon-main
+                                i.fas.fa-microchip
+                            div
+                                h2.node-title #{node.nodeName}
+                                p.node-subtitle 
+                                    span.status-dot.pulse
+                                    | Hệ thống giám sát thời gian thực
+                    .col-md-6.text-md-right.mt-3.mt-md-0
+                        +filter-status(filterStatus)
+
+        .node-management-area
+            - if(keyword.type != "sensor")
+                // --- DEVICE SECTION ---
+                if device.length > 0
+                    .card.main-card.mb-4
+                        .card-header.d-flex.justify-content-between.align-items-center
+                            h5.mb-0
+                                i.fas.fa-plug.mr-2.text-info
+                                | Thiết bị điều khiển
+                            .d-flex.align-items-center
+                                form(
+                                    action=`/node/manage/change-multi/${gatewayId}/${node.nodeId}?_method=PATCH`
+                                    method="POST"
+                                    form-change-multi
+                                    class="form-inline mr-3"
+                                )
+                                    select(name="type" class="form-control form-control-sm custom-select-modern mr-2")
+                                        option(disabled selected) -- Hành động nhanh --
+                                        option(value="turnOn").text-success Bật tất cả
+                                        option(value="turnOff") Tắt tất cả
+                                        option(value="delete-all").text-danger  Xóa tất cả
+                                    button(type="submit" class="btn btn-soft-success btn-sm") Áp dụng
+                                
+                                a(href=`/node/device/create/${gatewayId}/${node.nodeId}` class="btn-modern btn-create")
+                                    i.fas.fa-plus.mr-1
+                                    | Thêm thiết bị
+
+                        .card-body
+                            .row
+                                each item in device
+                                    .col-xl-6.mb-4
+                                        .device-card.p-3
+                                            .row.align-items-center
+                                                .col-md-7
+                                                    .d-flex.align-items-center.mb-2
+                                                        .status-indicator(class=item.status == "turnOn" ? "active" : "")
+                                                        h5.font-weight-bold.mb-0.ml-2 #{item.deviceName}
+                                                    p.text-muted.small.mb-3 Mô tả: #{item.description || 'Không có mô tả cho thiết bị này.'}
+                                                    .schedule-box
+                                                        .row.no-gutters
+                                                            .col-6
+                                                                .label.text-success ON
+                                                                .time #{item.formattedOnScheduledAt || '--:--'}
+                                                                if item.isEveryDayOn
+                                                                    span.day-tag Hằng ngày
+                                                            .col-6.border-left.pl-3
+                                                                .label.text-danger OFF
+                                                                .time #{item.formattedOffScheduledAt || '--:--'}
+                                                                if item.isEveryDayOff
+                                                                    span.day-tag Hằng ngày
+                                                .col-md-2.text-center.border-left.border-right
+                                                    .label-pin PIN
+                                                    .pin-value #{item.pin}
+                                                .col-md-3.text-center.mt-3.mt-md-0
+                                                    label.switch-modern(toggle-button)
+                                                        input(
+                                                            type="checkbox"
+                                                            toggle-input
+                                                            data-pin=item.pin
+                                                            checked=item.status == "turnOn" 
+                                                        )
+                                                        span.slider-modern
+                                                    .mt-3
+                                                        .btn-group.btn-group-sm
+                                                            a(href=`/node/device/schedule/${gatewayId}/${node.nodeId}/${item._id}` class="btn btn-light" title="Thiết lập lịch")
+                                                                i.fas.fa-calendar-alt.text-primary
+                                                            button(class="btn btn-light" button-delete-device data-id-device=item._id title="Xóa")
+                                                                i.fas.fa-trash-alt.text-danger
+
+                            +pagination(pagination)
+                            form(id="form-delete-device" method="post" data-path-device="/node/device/delete")
+                else 
+                  //- Hiển thị khi không có thiết bị nào
+                  .col-12
+                    .empty-state-card.text-center.py-5
+                      .empty-icon-wrapper.mb-4
+                        i.fas.fa-microchip
+                        .ripple-effect
+                      h4.font-weight-bold.text-dark Chưa có thiết bị điều khiển nào
+                      p.text-muted.mb-4 Có vẻ như Node này vẫn chưa được kết nối với thiết bị nào. 
+                      a(href=`/node/device/create/${gatewayId}/${node.nodeId}` class="btn btn-purple-modern")
+                        i.fas.fa-plus.mr-2
+                        | Thêm thiết bị đầu tiên
+            - else if (keyword.type == "sensor")
+                // --- SENSOR SECTION ---
+                .card.main-card.mb-4
+                    .card-header.d-flex.justify-content-between.align-items-center
+                        h5.mb-0.text-danger
+                            i.fas.fa-chart-line.mr-2
+                            | Dữ liệu cảm biến
+                        .d-flex
+                            +filter-status-sensor(filterStatusSensor)
+
+                    .card-body
+                        .filter-bar-modern.mb-4
+                            .row.align-items-center
+                                .col-md-4
+                                    label.small.font-weight-bold.text-muted Xem lịch sử:
+                                    input.form-control.form-control-sm.modern-input(type="date" historyDateInput value=dateCalender)
+                                .col-md-8.text-md-right
+                                    label.small.font-weight-bold.text-muted Chế độ:
+                                    .d-inline-block.ml-2
+                                        +filter-status-chart(filterStatusChart)
+
+
+                        case keyword.typeSensor
+                            when "temperature"
+                                +chartBox("temperatureChart", "Nhiệt độ", "temperature-value", "°C", "fa-thermometer-half", "danger")
+                            when "humidity"
+                                +chartBox("humidityChart", "Độ ẩm", "humidity-value", "%", "fa-tint", "info")
+                            when "light"
+                                +chartBox("lightChart", "Ánh sáng", "light-value", "Lux", "fa-sun", "warning")
+                            when "airQuality"
+                                +chartBox("aqiChart", "Chất lượng không khí", "aqi-value", "AQI", "fa-wind", "success")
+                            default
+                                .row
+                                    .col-md-6: +chartBox("temperatureChart", "Nhiệt độ", "temperature-value", "°C", "fa-thermometer-half", "danger")
+                                    .col-md-6: +chartBox("humidityChart", "Độ ẩm", "humidity-value", "%", "fa-tint", "info")
+                                    .col-md-6: +chartBox("lightChart", "Ánh sáng", "light-value", "Lux", "fa-sun", "warning")
+                                    .col-md-6: +chartBox("aqiChart", "Không khí", "aqi-value", "AQI", "fa-wind", "success")
+
+                // --- CONDITIONS SECTION ---
+                .card.main-card
+                    .card-header.d-flex.justify-content-between.align-items-center
+                        h5.mb-0.text-warning
+                            i.fas.fa-robot.mr-2
+                            | Điều kiện cảm biến
+                        //- Chỉ hiện nút "Thêm điều kiện" ở header nếu đã có dữ liệu
+                        if condition.length > 0
+                            a(href=`/node/sensor/create/${gatewayId}/${node.nodeId}` class="btn btn-soft-condition btn-create btn-sm")
+                                i.fas.fa-plus-circle.mr-1
+                                | Thêm điều kiện
+
+                    .card-body.p-0
+                        if condition.length > 0
+                            .table-responsive
+                                table.table.table-modern.mb-0
+                                    thead
+                                        tr
+                                            th Cảm biến
+                                            th Thiết bị tác động
+                                            th Ngưỡng hoạt động
+                                            th Trạng thái
+                                            th.text-center Thao tác
+                                    tbody
+                                        each item in condition
+                                            tr
+                                                td: .sensor-tag #{item.sensorName}
+                                                td: span.font-weight-bold.text-dark #{item.deviceName}
+                                                td
+                                                    .threshold-badge
+                                                        span #{item.valueMin}
+                                                        i.fas.fa-long-arrow-alt-right.mx-2
+                                                        span #{item.valueMax}
+                                                td
+                                                    if item.status === 'turnOn'
+                                                        span.status-pill.on Bật khi thỏa
+                                                    else
+                                                        span.status-pill.off Tắt khi thỏa
+                                                td.text-center
+                                                    button(class="btn btn-icon-delete" button-delete-condition data-id-condition=item._id)
+                                                        i.fas.fa-trash-alt
+                        else
+                            //- Hiển thị khi chưa có kịch bản tự động hóa nào
+                            .empty-state-container.text-center.py-5
+                                .empty-icon-wrapper.mb-4(style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);")
+                                    i.fas.fa-robot
+                                    .ripple-effect
+                                h4.font-weight-bold.text-dark Chưa có điều kiện cảm biến
+                                p.text-muted.mb-4 Hệ thống sẽ tự động làm việc khi bạn thiết lập các ngưỡng cảm biến.
+                                a(href=`/node/sensor/create/${gatewayId}/${node.nodeId}` class="btn btn-purple-modern")
+                                    i.fas.fa-plus-circle.mr-2
+                                    | Tạo kịch bản ngay
+                form(id="form-delete-condition" method="post" data-path-condition="/node/condition/delete")
+    style.
+        :root {
+            --bg-color: #f0f2f5;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-color: #4e73df;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        body { background-color: #f8f9fc; color: #4a4a4a; }
+        
+        .dashboard-wrapper {
+            position: relative;
+            min-height: 100vh;
+            padding: 20px;
+            background: radial-gradient(circle at top right, #e0e7ff 0%, #f0f2f5 50%);
+        }
+
+        /* Header Glassmorphism */
+        .header-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .header-icon-main {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+        }
+
+        .node-title { font-weight: 700; font-size: 1.5rem; margin: 0; color: #1a1a1a; }
+        .node-subtitle { font-size: 0.85rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; }
+
+        .status-dot {
+            height: 8px; width: 8px; background-color: #2ecc71;
+            border-radius: 50%; display: inline-block; margin-right: 8px;
+        }
+        /* Card & Container */
+        .main-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #fff !important;
+            border-bottom: 1px solid #f1f1f1;
+            padding: 1.25rem;
+        }
+
+        /* Device Card Style */
+        .device-card {
+            background: #fff;
+            border: 1px solid #edf0f5;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        .device-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .status-indicator {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #d1d3e2;
+        }
+        .status-indicator.active { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+
+        .schedule-box {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .schedule-box .label { font-size: 10px; text-transform: uppercase; color: #999; font-weight: 700; }
+        .schedule-box .time { font-size: 14px; font-weight: 600; color: #333; }
+        .day-tag { font-size: 9px; background: #fff; border: 1px solid #ddd; padding: 2px 5px; border-radius: 4px; }
+
+        .label-pin { font-size: 11px; color: #888; margin-bottom: 4px; }
+        .pin-value { background: #34495e; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+
+        /* Modern Switch */
+        .switch-modern {
+            position: relative; display: inline-block; width: 46px; height: 24px;
+        }
+        .switch-modern input { opacity: 0; width: 0; height: 0; }
+        .slider-modern {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eaecf4; transition: .4s; border-radius: 34px;
+        }
+        .slider-modern:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input:checked + .slider-modern { background-color: #4e73df; }
+        input:checked + .slider-modern:before { transform: translateX(22px); }
+
+        /* Chart V2 */
+        .chart-card-v2 { background: #fff; border-radius: var(--border-radius); border: 1px solid #edf0f5; }
+        .chart-header-v2 { padding: 1.5rem; border-bottom: 1px solid #f8f9fa; }
+        .icon-box { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .bg-soft-danger { background: var(--danger-soft); color: #e74c3c; }
+        .bg-soft-info { background: var(--info-soft); color: #3498db; }
+        .bg-soft-warning { background: var(--warning-soft); color: #f39c12; }
+        .bg-soft-success { background: var(--success-soft); color: #27ae60; }
+
+        /* Table Modern */
+        .table-modern thead th {
+            background: #f8f9fc; border: none; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; color: #858796; padding: 15px;
+        }
+        .table-modern tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f1f1f1; }
+        .sensor-tag {
+            background: #eef2ff; color: #4e73df; padding: 6px 12px; 
+            border-radius: 10px; font-weight: 600; font-size: 12px; display: inline-block;
+        }
+        .threshold-badge { background: #fff; border: 1px solid #e3e6f0; padding: 4px 10px; border-radius: 8px; font-family: monospace; display: inline-block}
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .status-pill.on { background: #e8f5e9; color: #2e7d32; }
+        .status-pill.off { background: #f5f5f5; color: #757575; }
+        
+        .btn-icon-delete { color: #e74a3b; background: transparent; border: none; transition: 0.2s; padding: 8px; border-radius: 50%; }
+        .btn-icon-delete:hover { background: #fff1f0; transform: scale(1.1); }
+
+        /* Buttons */
+        .btn-modern {
+            border-radius: 12px; padding: 8px 20px; font-size: 0.85rem;
+            font-weight: 600; border: none; transition: 0.3s; cursor: pointer;
+            display: inline-flex; align-items: center;
+        }
+        .btn-create { background: var(--primary-gradient); color: white; box-shadow: 0 4px 15px rgba(118, 75, 162, 0.2); }
+        .btn-create:hover { transform: scale(1.05); color: white; }
+
+        .btn-soft-condition {
+            border-radius: 12px; padding: 8px 20px; font-size: 0.85rem;
+            font-weight: 600; border: none; transition: 0.3s; cursor: pointer;
+            display: inline-flex; align-items: center;
+        }
+
+        .btn-soft-success { background: #e8f5e9; color: #2e7d32; border: none; }
+        .btn-soft-success:hover { background: #c8e6c9; }
+
+        //- thêm thiết bị
+        /* Hiệu ứng cho Empty State */
+        .empty-state-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px dashed #e0e0e0;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .empty-icon-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            font-size: 40px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Hiệu ứng vòng tròn tỏa ra xung quanh icon */
+        .ripple-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+            z-index: -1;
+            animation: ripple 2s infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .btn-purple-modern {
+            background: linear-gradient(90deg, #8e2de2, #4a00e0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-purple-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+            color: white;
+        }
+
+    script.
+        window.dataChart = !{JSON.stringify(dataChart)};
+
+    //- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    //- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    //- <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/index.umd.min.js"></script>
+
+    //- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script> 
+
+    //- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>

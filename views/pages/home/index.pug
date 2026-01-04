@@ -1,0 +1,171 @@
+extends ../../layout/default.pug
+include ../../mixin/box-head
+
+block main
+  style.
+    :root {
+      --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --soft-bg: #f8fafc;
+      --text-main: #1e293b;
+    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-main); background: #fff; }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 100px 0;
+      background: radial-gradient(circle at top right, #e9e9efff);
+    }
+    .hero-headline .text-1 {
+      font-size: 3rem; line-height: 1.1; letter-spacing: -2px;
+      background: linear-gradient(90deg, #95a6eeff 0%, #764ba2 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-headline .text-2 { font-size: 1.25rem; color: #64748b; margin-top: 24px; }
+    .hero-illustration {
+      filter: drop-shadow(0 20px 50px rgba(79, 70, 229, 0.2));
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Feature Cards */
+    .feature-section { padding: 80px 0; background: var(--soft-bg); border-radius: 60px 60px 0 0; }
+    .feature-card {
+      background: #fff; padding: 40px 30px; border-radius: 24px;
+      border: 1px solid #e2e8f0; transition: all 0.3s ease; height: 100%;
+    }
+    .feature-card:hover {
+      transform: translateY(-10px); border-color: #4f46e5;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    }
+    .feature-icon {
+      font-size: 2.5rem; margin-bottom: 20px; display: inline-block;
+      padding: 15px; background: #f1f5f9; border-radius: 16px;
+    }
+
+    /* Benefit Cards */
+    .benefit-card {
+      border-radius: 24px !important; transition: 0.3s;
+      background: rgba(255, 255, 255, 0.8) !important;
+      backdrop-filter: blur(10px);
+    }
+    .benefit-card:hover { background: #fff !important; box-shadow: 0 30px 60px rgba(0,0,0,0.1) !important; }
+    .btn-primary-custom {
+      background: var(--primary-gradient); border: none; padding: 16px 40px;
+      border-radius: 14px; font-weight: 700; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+      transition: 0.3s;
+    }
+    .btn-primary-custom:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4); }
+
+  //- HERO SECTION
+  section.hero-section
+    .container
+      .row.align-items-center
+        .col-lg-7
+          .hero-headline
+            h1.text-1.font-weight-bold Hệ thống giám sát cảm biến & Điều khiển đa khu vực
+            p.text-2 Tối ưu hóa vận hành, quản lý tập trung và tự động hóa quy trình sản xuất của bạn chỉ với một chạm.
+          .mt-5
+            if user
+              //- Nếu ĐÃ đăng nhập: Nút sáng màu, có hiệu ứng gradient
+              a.btn.btn-lg.btn-primary-custom.text-white(href="/project") 
+                | Khám phá ngay 
+                i.fas.fa-chevron-right.ml-2.small
+            else
+              //- Nếu CHƯA đăng nhập: Nút màu xám, không có hiệu ứng shadow/glow
+              a.btn.btn-lg.btn-light.text-muted(
+                href="/user/login" 
+                style="border-radius: 14px; padding: 16px 40px; font-weight: 700; border: 1px solid #e2e8f0; background: #f8fafc;"
+              ) 
+                | Đăng nhập để khám phá
+                i.fas.fa-lock.ml-2.small
+            
+            a.btn.btn-lg.ml-3.font-weight-bold(href="#benefits-of-customer" style="color: #4f46e5") Xem lợi ích
+        .col-lg-5.d-none.d-lg-block
+          img(src="/images/home.png" alt="IoT System" class="img-fluid hero-illustration")
+
+  //- FEATURE SECTION
+  section.feature-section#tinh-nang
+    .container
+      .text-center.mb-5
+        span.badge.badge-pill.px-3.py-2.mb-3(style="background: #eef2ff; color: #4f46e5; font-weight: 700;") FEATURES
+        h2.display-4.font-weight-bold Các Tính Năng Mạnh Mẽ
+      
+      .row
+        .col-lg-3.col-md-6.mb-4
+          .feature-card
+            .feature-icon 📡
+            h5.font-weight-bold Quản Lý Node Từ Xa
+            p.text-muted.small Giám sát và điều khiển mọi Node (ESP32) trong mạng LoRa của bạn không giới hạn khoảng cách.
+
+        .col-lg-3.col-md-6.mb-4
+          .feature-card
+            .feature-icon 🤖
+            h5.font-weight-bold Tự Động Hóa
+            p.text-muted.small Thiết lập Lịch trình (Schedule) và Điều kiện linh hoạt để hệ thống tự vận hành 24/7.
+
+        .col-lg-3.col-md-6.mb-4
+          .feature-card
+            .feature-icon 📈
+            h5.font-weight-bold Giám Sát Thời Gian Thực
+            p.text-muted.small Dữ liệu cảm biến được hiển thị qua biểu đồ trực quan và cập nhật ngay lập tức qua WebSocket.
+
+        .col-lg-3.col-md-6.mb-4
+          .feature-card
+            .feature-icon 🔒
+            h5.font-weight-bold Bảo mật & Tin cậy
+            p.text-muted.small Kết nối an toàn qua WSS (HiveMQ Cloud) đảm bảo dữ liệu của bạn luôn được bảo vệ tuyệt đối.
+
+  //- BENEFITS SECTION
+  section.benefits-section.py-5#benefits-of-customer(style="background: #e9e9efff")
+    .container.py-5
+      .row.align-items-center.mb-5
+        .col-lg-6
+          span.text-primary.font-weight-bold 🛠️ GIÁ TRỊ CỐT LÕI
+          h2.display-5.font-weight-bold.mt-2 Lợi Ích Khách Hàng Nhận Được 💖
+        .col-lg-6
+          p.lead.text-muted Chúng tôi không chỉ cung cấp thiết bị, chúng tôi cung cấp giải pháp giúp bạn thảnh thơi hơn trong việc quản lý.
+
+      .row
+        //- Lợi ích 1
+        .col-lg-4.mb-4
+          .benefit-card.card.h-100.shadow-sm.border-0.p-4
+            .icon-box.mb-4(style="width: 60px; height: 60px; background: #ecfdf5; border-radius: 16px; display: flex; align-items: center; justify-content: center;")
+              i.fas.fa-piggy-bank.fa-xl.text-success
+            h5.font-weight-bold Tiết Kiệm Chi Phí 💰
+            p.text-muted Giảm lãng phí năng lượng và tài nguyên thông qua các thuật toán tối ưu hóa vận hành tự động.
+
+        //- Lợi ích 2
+        .col-lg-4.mb-4
+          .benefit-card.card.h-100.shadow-sm.border-0.p-4
+            .icon-box.mb-4(style="width: 60px; height: 60px; background: #eff6ff; border-radius: 16px; display: flex; align-items: center; justify-content: center;")
+              i.fas.fa-bolt.fa-xl.text-info
+            h5.font-weight-bold Tăng Hiệu Suất 🚀
+            p.text-muted Tăng cường năng suất nông nghiệp và công nghiệp nhờ khả năng phản hồi tức thời với môi trường.
+
+        //- Lợi ích 3
+        .col-lg-4.mb-4
+          .benefit-card.card.h-100.shadow-sm.border-0.p-4
+            .icon-box.mb-4(style="width: 60px; height: 60px; background: #fffbeb; border-radius: 16px; display: flex; align-items: center; justify-content: center;")
+              i.fas.fa-shield-alt.fa-xl.text-warning
+            h5.font-weight-bold An Toàn Tuyệt Đối ✅
+            p.text-muted Nhận cảnh báo tức thời qua điện thoại ngay khi có sự cố nhỏ nhất xảy ra trong hệ thống.
+
+      .row.mt-4.justify-content-center
+        //- Lợi ích 4
+        .col-lg-4.mb-4
+          .benefit-card.card.h-100.shadow-sm.border-0.p-4
+            .icon-box.mb-4(style="width: 60px; height: 60px; background: #f8fafc; border-radius: 16px; display: flex; align-items: center; justify-content: center;")
+              i.fas.fa-layer-group.fa-xl.text-secondary
+            h5.font-weight-bold Dễ Dàng Mở Rộng 🧩
+            p.text-muted Thiết kế module cho phép thêm hàng trăm Node cảm biến mới mà không cần cài đặt lại từ đầu.
+
+        //- Lợi ích 5
+        .col-lg-4.mb-4
+          .benefit-card.card.h-100.shadow-sm.border-0.p-4
+            .icon-box.mb-4(style="width: 60px; height: 60px; background: #fef2f2; border-radius: 16px; display: flex; align-items: center; justify-content: center;")
+              i.fas.fa-laptop-code.fa-xl.text-danger
+            h5.font-weight-bold Quản Lý Tập Trung ✨
+            p.text-muted Theo dõi toàn bộ mạng lưới thiết bị tại nhiều địa lý khác nhau trên một màn hình duy nhất.

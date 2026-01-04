@@ -1,0 +1,206 @@
+extends ../../../layout/default.pug
+include ../../../mixin/alert.pug
+
+block main
+  .create-wrapper
+    .container
+      .row.justify-content-center
+        .col-lg-6.col-md-10
+          +alert-success(5000)
+          +alert-error(5000)
+          a(href=`javascript:history.back()` class="btn-back mb-4")
+            i.fas.fa-arrow-left.mr-2
+            | Quay lại danh sách quản lý
+
+          .modern-card
+            .card-header-gradient
+              i.fas.fa-plus-circle.fa-2x.mb-3
+              h2.font-weight-bold.mb-0 Thiết lập điều kiện mới
+              p.opacity-75.small.mt-2 Tự động hóa thiết bị dựa trên ngưỡng cảm biến
+
+            .form-body
+              form(
+                action=`/node/sensor/create/${gatewayId}/${nodeId}`
+                id="form-create-condition"
+                method="POST"
+              )
+                input(type="hidden" name="gatewayId" value=gatewayId)
+                input(type="hidden" name="nodeId" value=nodeId)
+
+                //- Thông tin Node hiển thị (Read-only)
+                .row.mb-4
+                  .col-6
+                    small.text-muted.d-block Gateway ID
+                    span.font-weight-bold.text-dark #{gatewayId}
+                  .col-6
+                    small.text-muted.d-block Node ID
+                    span.font-weight-bold.text-dark #{nodeId}
+
+                hr.my-4.opacity-5
+
+                //- Loại cảm biến
+                .form-group-custom
+                  label(for="sensorType") 
+                    i.fas.fa-thermometer-half
+                    | Loại cảm biến
+                  select.form-control-modern(name="sensorType" id="sensorType" required)
+                    option(value="" disabled selected) Chọn loại cảm biến cần theo dõi
+                    option(value="temperature") 🔥 Nhiệt độ (°C)
+                    option(value="humidity") 💧 Độ ẩm (%)
+                    option(value="light") ☀️ Ánh sáng (Lux)
+                    option(value="air") 🌬️ Chất lượng không khí
+
+                //- Giá trị tối thiểu & tối đa (Nằm trên 1 hàng)
+                .range-input-group
+                  .form-group-custom
+                    label(for="minValue") 
+                      i.fas.fa-arrow-down
+                      | Ngưỡng dưới
+                    input.form-control-modern(type="number" id="minValue" name="minValue" placeholder="0" required)
+                  
+                  .form-group-custom
+                    label(for="maxValue") 
+                      i.fas.fa-arrow-up
+                      | Ngưỡng trên
+                    input.form-control-modern(type="number" id="maxValue" name="maxValue" placeholder="100" required)
+
+                //- Thiết bị chấp hành
+                .form-group-custom
+                  label(for="device") 
+                    i.fas.fa-plug
+                    | Thiết bị điều khiển
+                  select.form-control-modern(id="device" name="deviceId" required)
+                    option(value="" disabled selected) Chọn thiết bị thực thi lệnh
+                    each item in device
+                      option(value=item._id) #{item.deviceName}
+
+                //- Trạng thái phản hồi
+                .form-group-custom
+                  label(for="status") 
+                    i.fas.fa-toggle-on
+                    | Hành động khi thỏa điều kiện
+                  select.form-control-modern(id="status" name="status" required)
+                    option(value="" disabled selected) Chọn hành động
+                    option(value="turnOn") ✅ Bật thiết bị
+                    option(value="turnOff") ❌ Tắt thiết bị
+
+                button.btn-submit.mt-4(type="submit")
+                  span Xác nhận tạo điều kiện
+                  i.fas.fa-chevron-right.ml-2
+
+
+    
+    style. 
+        :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        --glass-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        .create-wrapper {
+            background: #f1f5f9;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .modern-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .card-header-gradient {
+            background: var(--primary-gradient);
+            padding: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .form-body {
+        padding: 40px;
+        }
+
+        .form-group-custom {
+        margin-bottom: 25px;
+        }
+
+        .form-group-custom label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        }
+
+        .form-group-custom label i {
+        margin-right: 8px;
+        color: #6366f1;
+        }
+
+        .form-control-modern {
+        width: 100%;
+        padding: 12px 18px;
+        border-radius: 14px;
+        border: 2px solid #e2e8f0;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+        }
+
+        .form-control-modern:focus {
+        border-color: #6366f1;
+        background: #fff;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-submit {
+        width: 100%;
+        padding: 15px;
+        border-radius: 14px;
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+        transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .range-input-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        }
+
+        /* Nút Quay Lại */
+        .btn-back {
+        display: inline-flex;
+        align-items: center;
+        color: #636e72;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.3s;
+        }
+        .btn-back:hover {
+            color: var(--primary-color);
+            transform: translateX(-5px);
+        }
+
+    script.
+        document.getElementById('form-create-condition').addEventListener('submit', function(e) {
+            const min = parseFloat(document.getElementById('minValue').value);
+            const max = parseFloat(document.getElementById('maxValue').value);
+
+            if (min >= max) {
+                e.preventDefault(); // Chặn đứng việc gửi form
+                alert('Lỗi: Ngưỡng dưới (' + min + ') không được lớn hơn ngưỡng trên (' + max + ')!');
+            }
+        });

@@ -1,0 +1,10 @@
+mixin filter-status-chart(filterStatusChart)
+  .chart-filter-glass
+    each item in filterStatusChart
+      button(
+        class=`chart-filter-btn ${item.class}`
+        button-status-chart= item.status
+      )
+        //- Thêm chấm tròn nhỏ để báo hiệu trạng thái đang chọn
+        span.status-indicator-dot
+        | #{item.name}

@@ -1,0 +1,268 @@
+extends ../../layout/default.pug
+include ../../mixin/filter-status.pug
+include ../../mixin/search.pug
+include ../../mixin/pagination.pug
+include ../../mixin/alert.pug
+
+block main
+  style.
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-bg: #f8fafc;
+      --glass: rgba(255, 255, 255, 0.8);
+    }
+    body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
+    .main-wrapper { padding: 2rem 0; }
+    
+    /* Header & Project Info */
+    .project-header-card {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border-radius: 20px; border: none; overflow: hidden;
+    }
+    .id-badge { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border-radius: 8px; padding: 4px 12px; font-size: 0.85rem; }
+    
+    /* Card Styling */
+    .modern-card {
+      border: none; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      background: var(--glass); backdrop-filter: blur(10px);
+    }
+    .card-header-custom {
+      background: transparent; border-bottom: 1px solid #e2e8f0; padding: 1.5rem;
+      font-weight: 700; color: #1e293b; display: flex; align-items: center;
+    }
+
+    /* Table Styling */
+    .table thead th { 
+      background: #f8fafc; text-transform: uppercase; font-size: 0.7rem; 
+      letter-spacing: 0.05em; color: #64748b; border: none; padding: 1rem;
+    }
+    .table tbody td { vertical-align: middle; padding: 1.2rem 1rem; border-bottom: 1px solid #f1f5f9; }
+    .node-name { font-weight: 600; color: #1e293b; }
+    
+    /* Action Buttons */
+    .btn-icon {
+      width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 12px; transition: all 0.2s; margin: 0 3px; border: 1px solid #e2e8f0; background: white;
+    }
+    .btn-icon:hover { transform: translateY(-3px); box-shadow: 0 5px 12px rgba(0,0,0,0.1); }
+    
+    /* Map Section */
+    .map-container { border-radius: 20px; overflow: hidden; border: 4px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+
+    /* Thêm vào root có sẵn */
+    :root {
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    }
+
+    /* Modal hiện đại */
+    .modal-content-modern {
+        border-radius: 30px !important;
+        border: none !important;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .header-gradient-modal {
+        background: var(--primary-gradient);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .node-icon-circle {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #94a3b8;
+        letter-spacing: 0.05em;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+  .main-wrapper
+    .container-fluid.px-lg-5
+      +alert-success(5000)
+
+      //- Card 1: Project & Gateway Header
+      .row.justify-content-center.mb-4
+        .col-12
+          .project-header-card.card.text-white.shadow-lg
+            .card-body.p-4
+              .row.align-items-center
+                .col-md-8
+                  nav(aria-label="breadcrumb")
+                    ol.breadcrumb.bg-transparent.p-0.mb-2
+                      li.breadcrumb-item: a.text-white-50(href="/project") Dự án
+                      li.breadcrumb-item.active.text-white(aria-current="page") Chi tiết Gateway
+                  h2.font-weight-bold.mb-0 🏗️ #{gateway.projectName}
+                  .mt-2.d-flex.align-items-center
+                    span.id-badge Gateway ID: #{gateway.gatewayId}
+                    span.ml-3.small.text-white-50 
+                      i.fas.fa-circle.text-success.mr-1.small
+                      | Hệ thống đang hoạt động
+                .col-md-4.text-md-right.mt-3.mt-md-0
+                  a.btn.btn-light.px-4(href="/project" style="border-radius: 12px; font-weight: 600; color: var(--primary-color);")
+                    i.fas.fa-arrow-left.mr-2
+                    | Danh sách dự án
+
+      .row
+        //- Left Column: Node List
+        .col-xl-7.col-lg-12
+          .modern-card.card.mb-4
+            .card-header-custom
+              i.fas.fa-microchip.mr-2.text-primary
+              | QUẢN LÝ DANH SÁCH NODE
+            
+            .card-body.p-4
+              .row.mb-4
+                .col-md-6.mb-2
+                  a.btn.btn-outline-primary.shadow-sm(
+                    href=`/node/create/${gateway.gatewayId}`
+                    style="border-radius: 12px; padding: 10px 20px;"
+                  )
+                    i.fas.fa-plus-circle.mr-2
+                    | Thêm Node Mới
+                .col-md-6
+                  .search-box
+                    +search(keyword)
+
+              .table-responsive
+                table.table.table-hover
+                  thead
+                    tr
+                      th.text-center STT
+                      th Thông tin Node
+                      th Mô tả
+                      th.text-center Hành động
+                  tbody
+                    if node.length > 0
+                      each item, index in node
+                        tr
+                          td.text-center.text-muted #{index + 1}
+                          td
+                            span.node-name.d-block #{item.nodeName}
+                            small.text-muted ID: #{item.nodeId}
+                          td
+                            p.mb-0.text-truncate(style="max-width: 180px;") #{item.description || '...'}
+                          td.text-center
+                            //- Nút quản lý (màu tím)
+                            a.btn-icon.text-primary(
+                              href=`/node/manage/${gateway.gatewayId}/${item.nodeId}/${item.position}`
+                              title="Quản lý"
+                            ) 
+                              i.fas.fa-cog
+                            
+                            //- Nút chi tiết (màu vàng)
+                            button.btn-icon.text-warning(
+                              data-toggle="modal" 
+                              data-target="#nodeDetail" 
+                              data-node-name=item.nodeName
+                              data-address=item.address
+                              data-description=item.description
+                              data-date-created=item.createdAt.toLocaleDateString('vi-VN')
+                              title="Xem nhanh"
+                            ) 
+                              i.fas.fa-eye
+
+                            //- Nút sửa (màu xanh)
+                            a.btn-icon.text-info(
+                              href=`/node/edit/${gateway.gatewayId}/${item.nodeId}`
+                              title="Chỉnh sửa"
+                            ) 
+                              i.fas.fa-edit
+
+                            //- Nút xóa (màu đỏ)
+                            button.btn-icon.text-danger(
+                              button-delete-node 
+                              data-id-node=item._id
+                              title="Gỡ bỏ"
+                            ) 
+                              i.fas.fa-trash-alt
+                    else
+                      tr
+                        td(colspan="4" class="text-center py-5 text-muted") 
+                          img(src="https://cdn-icons-png.flaticon.com/512/5089/5089733.png" style="width: 64px; opacity: 0.3")
+                          p.mt-3 Dự án này chưa có Node nào.
+
+              .card-footer.bg-transparent.border-0.px-0
+                +pagination(pagination)
+
+        //- Right Column: Map Section
+        .col-xl-5.col-lg-12
+          .modern-card.card.mb-4
+            .card-header-custom
+              i.fas.fa-map-marked-alt.mr-2.text-success
+              | VỊ TRÍ CHIẾN LƯỢC
+            .card-body.p-3
+              .map-container
+                div(id="map-content" class="map-section" style="height: 520px; width: 100%;")
+              .mt-3.px-2
+                small.text-muted 
+                  i.fas.fa-info-circle.mr-1
+                  | Bản đồ hiển thị vị trí thực tế của các Node trong hệ thống Gateway.
+
+  //- Hidden Elements & Modals
+  form(action="", method="post", id="form-delete-node", data-path-node="/node/delete")
+
+  script.
+    const rawMapData = !{JSON.stringify(mapData || [])};
+    window.allMapData = rawMapData;
+
+  #nodeDetail.modal.fade(tabindex="-1" role="dialog" aria-hidden="true")
+    .modal-dialog.modal-dialog-centered
+      .modal-content.modal-content-modern
+        .modal-body.p-0
+          //- Phần Header màu Gradient
+          .header-gradient-modal
+            button.close.text-white(type="button" data-dismiss="modal" style="position: absolute; right: 25px; top: 20px; opacity: 0.8;")
+              span &times;
+            .node-icon-circle
+              i.fas.fa-satellite-dish
+            h3#nodeName.font-weight-bold.mb-1 [Tên Node]
+            span.badge.badge-pill(style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);") 
+              i.fas.fa-fingerprint.mr-1
+              | Node Active
+
+          //- Phần Nội dung chi tiết
+          .p-4.p-md-5
+            .row.mb-4
+              .col-6.border-right
+                span.info-label Ngày khởi tạo
+                span#dateCreated.info-value
+              .col-6.pl-4
+                span.info-label Trạng thái
+                span.text-success.font-weight-bold 
+                  i.fas.fa-check-circle.mr-1
+                  | Ổn định
+
+            .info-group.mb-4
+              span.info-label 📍 Vị trí lắp đặt
+              p#address.info-value.mb-0 [Địa chỉ chi tiết]
+            
+            .info-group
+              span.info-label 📝 Mô tả kỹ thuật
+              div#description.bg-light.p-3.rounded-lg.text-muted(style="font-size: 0.9rem; line-height: 1.6; border-left: 4px solid #6366f1;") 
+                | [Mô tả hệ thống]
+
+          //- Footer
+          .p-4.bg-light.text-center
+            button.btn.btn-dark.px-5(data-dismiss="modal" style="border-radius: 15px; font-weight: 600; letter-spacing: 0.5px;") Đóng cửa sổ

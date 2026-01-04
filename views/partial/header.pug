@@ -1,0 +1,173 @@
+header.header-modern
+  .container-fluid
+    .header-wrapper
+      // --- LOGO AREA ---
+      .inner-logo
+        a(href="/") 
+          img(src="/images/logo.png", alt="Logo")
+          span.brand-name SMART SYSTEM
+
+      // --- MAIN MENU ---
+      nav.inner-menu
+        ul
+          li
+            a(href="/")
+              i.fas.fa-home
+              span Trang chủ
+          li
+            a(href="/project")
+              i.fas.fa-project-diagram
+              span Dự án
+
+      // --- USER ACTIONS ---
+      .inner-auth
+        if(user)
+          .user-profile-dropdown
+            a(href="/user/info" class="user-info-link")
+              .avatar-mini
+                img(src=user.avatar, class="profile-avatar-img")
+              span.user-name #{user.fullName}
+            a(href="/user/logout" class="btn-logout-icon" title="Đăng xuất")
+              i.fas.fa-sign-out-alt
+        else
+          .auth-buttons
+            a(href="/user/login" class="btn-login") Đăng nhập
+            a(href="/user/register" class="btn-register") 
+              span Đăng ký
+
+  style. 
+    :root {
+    --header-height: 80px;
+    --primary-blue: #764ba2;
+    --text-dark: #2d3436;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    .header-modern {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: var(--header-height);
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    }
+
+    .header-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .inner-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .inner-logo img {
+      height: 60px;
+      width: 210px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+    .brand-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #95a6eeff 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Menu Chính */
+    .inner-menu ul {
+      display: flex;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .inner-menu a {
+      text-decoration: none;
+      color: #636e72;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.3s;
+      padding: 8px 16px;
+      border-radius: 12px;
+    }
+    .inner-menu a i { font-size: 1.1rem; opacity: 0.7; }
+    .inner-menu a:hover, .inner-menu a.active {
+      color: var(--primary-blue);
+      background: rgba(142, 45, 226, 0.1);
+    }
+
+    /* Khu vực Auth/User */
+    .inner-auth { display: flex; align-items: center; gap: 15px; }
+
+    .user-profile-dropdown {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        padding: 6px 6px 6px 15px;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid #edf2f7;
+    }
+    .user-info-link {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .avatar-mini {
+        width: 32px; height: 32px;
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 0.8rem;
+    }
+    .user-name { color: var(--text-dark); font-weight: 700; font-size: 0.9rem; }
+
+    .btn-logout-icon {
+        margin-left: 10px;
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #ff7675;
+        transition: 0.3s;
+    }
+    .btn-logout-icon:hover { background: #fff5f5; color: #d63031; }
+
+    /* Auth Buttons */
+    .auth-buttons { display: flex; gap: 12px; }
+    .btn-login {
+        text-decoration: none; color: var(--text-dark);
+        font-weight: 700; padding: 10px 20px;
+    }
+    .btn-register {
+        text-decoration: none;
+        background: var(--text-dark);
+        color: white;
+        padding: 10px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-register:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+    .profile-avatar-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 35px; /* Squircle */
+            transform: rotate(-5deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            background: #fff;
+        }

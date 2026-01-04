@@ -1,0 +1,121 @@
+extends ../../../layout/default.pug
+include ../../../mixin/alert.pug
+
+block main
+    //- Phần nền Gradient nhẹ tạo chiều sâu cho trang
+    .container-fluid.py-3(style="background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh;")
+        .container
+            +alert-success(5000)
+            +alert-error(5000)
+            
+            //- Header thiết kế tối giản, hiện đại
+            .row.justify-content-center.mb-2
+                .col-md-8.text-center
+                    .display-4.text-primary.mb-2
+                        i.fas.fa-project-diagram.animate__animated.animate__fadeInDown
+                    h3.font-weight-bold.text-dark Thiết Lập Node Mới
+                    p.lead.text-muted Cấu hình và kết nối thiết bị cảm biến vào hệ thống điều khiển trung tâm
+
+            .row.justify-content-center
+                .col-xl-10
+                    .card.border-0.shadow-lg.overflow-hidden(style="border-radius: 20px;")
+                        .row.no-gutters
+                            //- Cột trái: Hướng dẫn & Tìm kiếm (Dark Sidebar style)
+                            .col-lg-4.bg-dark.p-4.text-white
+                                h5.mb-4.text-info 
+                                    i.fas.fa-search-location.mr-2
+                                    | Bước 1: Quét thiết bị
+                                p.small.text-secondary Tìm kiếm địa chỉ WiFi của Node để xác định mã định danh duy nhất (ID).
+
+                                form(id="form-search-wifiName" class="mt-4")
+                                    .form-group
+                                        label.text-light.small Tên WiFi (SSID)
+                                        .input-group.shadow-sm
+                                            input.form-control.border-0(
+                                                type="text" 
+                                                id="wifiName" 
+                                                name="wifiName"
+                                                placeholder="VD: SmartNode_..."
+                                                value=wifiName
+                                                style="border-radius: 10px 0 0 10px;"
+                                            ) 
+                                            .input-group-append
+                                                button.btn.btn-info(type="submit" style="border-radius: 0 10px 10px 0;")
+                                                    i.fas.fa-sync-alt
+
+                                .form-group.mt-4
+                                    label.text-light.small Kết quả tìm thấy
+                                    select(name="nodeId" id="selectNode" class="custom-select border-0 shadow-sm" style="border-radius: 10px; height: 45px;")
+                                        option(value="" disabled selected) --- Chọn thiết bị ---
+                                        each item in node 
+                                            option(value=item.nodeId) ⚡ #{item.wifiName} - #{item.nodeId}
+
+                                //- Decorate thêm một chút hình ảnh minh họa logic
+                                .mt-5.d-none.d-lg-block.opacity-50
+                                    .p-3.border.border-secondary.rounded(style="border-style: dashed !important;")
+                                        small.d-block.mb-2 💡 Lưu ý:
+                                        small Đảm bảo Node đang ở chế độ Phát WiFi (AP Mode) trước khi thực hiện quét.
+
+                            //- Cột phải: Form nhập liệu (Clean White style)
+                            .col-lg-8.bg-white.p-4.p-md-5
+                                h5.mb-4.text-dark 
+                                    i.fas.fa-edit.mr-2.text-primary
+                                    | Bước 2: Thông tin vận hành
+
+                                form(
+                                    action=`/node/create`
+                                    id="form-create-node"
+                                    method="POST"
+                                )
+                                    input(type="hidden" name="gatewayId" value=gatewayId)
+                                    input(type="hidden" name="nodeId" id="hiddenNodeId" value="")
+
+                                    .form-group.mb-4
+                                        label.font-weight-bold Tên định danh
+                                        input.form-control.form-control-md.bg-light.border-0(
+                                            type="text"
+                                            name="nodeName"
+                                            placeholder="Đặt tên dễ nhớ "
+                                            required
+                                            style="border-radius: 12px;"
+                                        )
+                                    
+                                    .form-group.mb-4
+                                        label.font-weight-bold Vị trí & Địa chỉ lắp đặt
+                                        .input-group
+                                            input.form-control.form-control-md.bg-light.border-0(
+                                                type="text" 
+                                                id="address"
+                                                name="address" 
+                                                placeholder="Nhập tọa độ"
+                                                required
+                                                style="border-radius: 12px 0 0 12px;"
+                                            )
+                                            .input-group-append
+                                                a.btn.btn-light.border-0.d-flex.align-items-center(
+                                                    href="http://maps.google.com" 
+                                                    target="_blank" 
+                                                    style="border-radius: 0 12px 12px 0; background-color: #f1f3f5;"
+                                                )
+                                                    i.fas.fa-map-marked-alt.text-danger
+
+                                    .form-group.mb-4
+                                        label.font-weight-bold Ghi chú chi tiết
+                                        textarea.form-control.bg-light.border-0(
+                                            name="description"
+                                            rows="4"
+                                            placeholder="Mô tả mục đích sử dụng thiết bị này..."
+                                            style="border-radius: 12px;"
+                                        )
+
+                                    .mt-5.d-flex.justify-content-between.align-items-center
+                                        a.btn.btn-link.text-muted(href=`/project/manage/${gatewayId}`)
+                                            i.fas.fa-chevron-left.mr-2
+                                            | Hủy bỏ
+                                        
+                                        button.btn.btn-primary.btn-lg.px-5(
+                                            type="submit"
+                                            style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,123,255,0.2);"
+                                        )
+                                            i.fas.fa-save.mr-2
+                                            | Lưu và Kích hoạt Node

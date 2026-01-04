@@ -1,0 +1,45 @@
+//- partial/footer.pug
+footer.footer.text-black.py-4
+    .container
+        .row
+            //- Cột 1: Thông tin Liên hệ
+            .col-md-4.mb-3.mb-md-0
+                h6.mb-3 Liên Hệ 📞
+                p
+                    i.fas.fa-envelope.mr-2
+                    | Email: 
+                    a(href="mailto:support@28teach.com").text-black ntdat2152003@gmail,com
+                p
+                    i.fas.fa-phone-alt.mr-2
+                    | Hỗ trợ: 
+                    a(href="tel:+84123456789").text-black 0917 750 461
+
+            //- Cột 2: Liên kết Quan trọng
+            .col-md-4.mb-3.mb-md-0
+                h6.mb-3 Liên Kết 🔗
+                ul.list-unstyled
+                    li
+                        a(href="#top") Trang chủ
+                    li
+                        a(href="#tinh-nang") Các tính năng mạnh mẽ
+                    li
+                        a(href="#benefits-of-customer") Lợi ích khách hàng
+
+            //- Cột 3: Mạng Xã hội
+            .col-md-4.text-md-right
+                h6.mb-3 Theo Dõi Chúng Tôi
+                .social-icons
+                    a(href="#").text-black.mr-3
+                        i.fab.fa-facebook-f.fa-lg
+                    a(href="#").text-black.mr-3
+                        i.fab.fa-twitter.fa-lg
+                    a(href="#").text-black.mr-3
+                        i.fab.fa-linkedin-in.fa-lg
+                    a(href="#").text-black
+                        i.fab.fa-instagram.fa-lg
+
+        //- Dòng Copyright
+        hr.bg-secondary.mt-3.mb-3
+        .row
+            .col-12.text-center
+                p.mb-0 &copy; #{new Date().getFullYear()} Nguyễn Tấn Đạt

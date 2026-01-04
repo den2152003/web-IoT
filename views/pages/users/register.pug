@@ -1,0 +1,190 @@
+extends ../../layout/default.pug
+include ../../mixin/alert.pug
+
+block main
+  +alert-error(5000)
+
+  .register-wrapper
+    .container
+      .row.justify-content-center
+        .col-lg-5.col-md-8
+          .register-card
+            .card-header-custom
+              h3 Đăng ký tài khoản
+              p.text-muted Chào mừng bạn! Vui lòng nhập thông tin để tiếp tục.
+            
+            .card-body-custom
+              form(action="/user/register" method="POST")
+                .form-group-custom
+                  label(for="fullName") 
+                    i.fas.fa-user.mr-2
+                    | Họ và tên
+                  input(
+                    type="text"
+                    class="form-control-modern"
+                    id="fullName"
+                    name="fullName"
+                    placeholder="Nguyễn Văn A"
+                    required
+                  )
+                
+                .form-group-custom
+                  label(for="email") 
+                    i.fas.fa-envelope.mr-2
+                    | Email
+                  input(
+                    type="email"
+                    class="form-control-modern"
+                    id="email"
+                    name="email"
+                    placeholder="example@gmail.com"
+                    required
+                  )
+                
+                .form-group-custom
+                  label(for="password") 
+                    i.fas.fa-lock.mr-2
+                    | Mật khẩu
+                  input(
+                    type="password"
+                    class="form-control-modern"
+                    id="password"
+                    name="password"
+                    placeholder="Nhập mật khẩu"
+                    required
+                  )
+                  .toggle-password#togglePassword
+                    i.fas.fa-eye
+                
+                button(type="submit" class="btn-modern") 
+                  span Đăng ký ngay
+                  i.fas.fa-arrow-right.ml-2
+
+            .card-footer-custom.text-center
+              p.mb-0 Đã có tài khoản? 
+                a(href="/user/login") Đăng nhập
+  
+  style. 
+    .register-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 40px 0;
+    }
+
+    /* Card thiết kế theo phong cách tối giản */
+    .register-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .card-header-custom {
+        padding: 40px 40px 10px;
+        text-align: center;
+    }
+
+    .card-header-custom h3 {
+        font-weight: 700;
+        color: #2d3436;
+        letter-spacing: -0.5px;
+    }
+
+    .card-body-custom {
+        padding: 20px 40px 30px;
+    }
+
+    /* Custom lại Input */
+    .form-group-custom {
+        margin-bottom: 25px;
+        
+
+    }
+
+    .form-group-custom label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #636e72;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control-modern {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        padding-right: 45px;
+        font-size: 1rem;
+        border-radius: 12px;
+        border: 2px solid #edf2f7;
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-modern:focus {
+        border-color: #ff4757;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1);
+    }
+
+    /* Nút bấm hiện đại */
+    .btn-modern {
+        width: 100%;
+        padding: 14px;
+        background: #0e0d0dff;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .btn-modern:hover {
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .card-footer-custom {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-top: 1px solid #eee;
+    }
+
+    .card-footer-custom a {
+        color: linear-gradient(90deg, #4facfe, #00f2fe);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    /* NÚT CON MẮT NẰM ĐÈ LÊN TRÊN */
+    .toggle-password {
+        position: absolute;
+        right: 70px; /* Cách mép phải input 15px */
+        top: 69%;
+        transform: translateY(-50%);
+        z-index: 3; /* Nằm trên cùng nhất */
+        cursor: pointer;
+        padding: 5px;
+        color: #94a3b8;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .toggle-password:hover {
+        color: #4facfe;
+        transform: translateY(-50%) scale(1.1);
+    }

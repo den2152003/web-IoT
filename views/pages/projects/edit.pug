@@ -1,0 +1,108 @@
+extends ../../layout/default.pug
+include ../../mixin/alert.pug
+
+block main
+    //- Custom CSS riêng cho trang này để làm giao diện "xịn" hẳn
+    style.
+        :root {
+            --primary-purple: #7f00ff;
+            --secondary-purple: #e100ff;
+            --bg-light: #f8f9fa;
+        }
+        body { background-color: #f8f9fa; }
+        .edit-card { border-radius: 16px; border: none; transition: all 0.3s ease; }
+        .form-label { font-size: 0.875rem;font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6366f1; }
+        .input-custom { border-radius: 10px; border: 1px solid #e0e0e0; padding: 12px 15px; transition: 0.2s; }
+        .input-custom:focus { border-color: #4e73df; box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.1); }
+        .btn-update { background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple)); border: none; border-radius: 10px; font-weight: 600; }
+        .icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(78, 115, 223, 0.1); color: #4e73df; margin-right: 15px; }
+
+    .container.py-5
+        +alert-error(5000)
+        +alert-success(5000)
+
+        .row.justify-content-center
+            .col-xl-8
+                //- Breadcrumb & Title
+                nav(aria-label="breadcrumb")
+                    ol.breadcrumb.bg-transparent.p-0.mb-2
+                        li.breadcrumb-item: a(href="/project") Dự án
+                        li.breadcrumb-item.active Chỉnh sửa
+                h2.h3.font-weight-bold.text-dark.mb-4 Chỉnh sửa thông tin Dự án
+
+                .card.edit-card.shadow-sm
+                    .card-body.p-4.p-md-5
+                        form(
+                            action=`/project/edit/${gateway.gatewayId}?_method=PATCH`
+                            id="form-edit-project"
+                            method="POST"
+                        )
+                            //- Section 1: Thông tin cơ bản
+                            .d-flex.align-items-center.mb-4
+                                .icon-box: i.fas.fa-info-circle
+                                h5.mb-0.font-weight-bold Thông tin cơ bản
+
+                            .row
+                                .col-md-6.mb-4
+                                    label.form-label(for="projectName") Tên Dự Án
+                                    input.form-control.input-custom(
+                                        type="text"
+                                        id="projectName"
+                                        name="projectName"
+                                        value=gateway.projectName
+                                        placeholder="Ví dụ: Smart Farm 2024"
+                                        required
+                                    )
+                                .col-md-6.mb-4
+                                    label.form-label(for="gatewayName") Tên Gateway
+                                    input.form-control.input-custom(
+                                        type="text"
+                                        id="gatewayName"
+                                        name="gatewayName"
+                                        value=gateway.gatewayName
+                                        required
+                                    )
+
+                            //- Section 2: Vị trí & Mô tả
+                            hr.my-4.light
+                            .d-flex.align-items-center.mb-4
+                                .icon-box: i.fas.fa-map-marked-alt
+                                h5.mb-0.font-weight-bold Vị trí & Mô tả
+
+                            .mb-4
+                                label.form-label(for="address") Địa chỉ lắp đặt
+                                .input-group
+                                    input.form-control.input-custom(
+                                        type="text"
+                                        id="address"
+                                        name="address"
+                                        value=gateway.address
+                                        required
+                                    )
+                                    .input-group-append
+                                        a.btn.btn-light.border.d-flex.align-items-center(
+                                            href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gateway.address)}`
+                                            target="_blank"
+                                            title="Xem trên bản đồ"
+                                        ) 
+                                            i.fas.fa-external-link-alt.mr-2
+                                            small Maps
+
+                            .mb-4
+                                label.form-label(for="desc") Mô tả chi tiết
+                                textarea.form-control.input-custom(
+                                    id="desc"
+                                    name="description"
+                                    rows="4"
+                                    placeholder="Ghi chú về thiết bị hoặc vị trí lắp đặt..."
+                                )= gateway.description
+
+                            //- Footer Actions
+                            .mt-5.pt-4.border-top.d-flex.justify-content-between.align-items-center
+                                a.text-muted.font-weight-bold(href="/project") 
+                                    i.fas.fa-chevron-left.mr-2
+                                    | Hủy thay đổi
+                                
+                                button.btn.btn-primary.btn-update.px-5.py-3(type="submit")
+                                    i.fas.fa-cloud-upload-alt.mr-2
+                                    | Lưu cấu hình dự án
