@@ -24,6 +24,8 @@ router.patch('/edit/:id', controller.editPatch);
 
 router.get('/manage/:id', controller.manage);
 
+router.patch('/reset-wifi/:gatewayId', controller.resetWifi);
+
 
 // router.get('/searchGateway', controller.searchGateway);
 

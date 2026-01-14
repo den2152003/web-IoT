@@ -113,9 +113,19 @@ block main
                     ol.breadcrumb.bg-transparent.p-0.mb-2
                       li.breadcrumb-item: a.text-white-50(href="/project") Dự án
                       li.breadcrumb-item.active.text-white(aria-current="page") Chi tiết Gateway
-                  h2.font-weight-bold.mb-0 🏗️ #{gateway.projectName}
+                  .d-flex.align-items-center
+                    h2.font-weight-bold.mb-0 🏗️ #{gateway.projectName}
+                    button.btn-icon.text-warning.ml-2(
+                      button-reset-wifi-gateway 
+                      data-id-gateway=gateway._id
+                      data-gateway-id=gateway.gatewayId
+                      title="Reset WiFi Gateway"
+                    ) 
+                      i.fas.fa-wifi
                   .mt-2.d-flex.align-items-center
                     span.id-badge Gateway ID: #{gateway.gatewayId}
+                    
+
                     span.ml-3.small.text-white-50 
                       i.fas.fa-circle.text-success.mr-1.small
                       | Hệ thống đang hoạt động
@@ -197,6 +207,16 @@ block main
                               title="Gỡ bỏ"
                             ) 
                               i.fas.fa-trash-alt
+                            
+                            //- Thêm vào trong tbody, cạnh nút Xóa (màu đỏ)
+                            button.btn-icon.text-warning(
+                              button-reset-wifi 
+                              data-id-node=item._id
+                              data-node-id=item.nodeId
+                              title="Reset WiFi"
+                              style="display: none;"
+                            ) 
+                              i.fas.fa-wifi
                     else
                       tr
                         td(colspan="4" class="text-center py-5 text-muted") 
@@ -221,8 +241,26 @@ block main
                   | Bản đồ hiển thị vị trí thực tế của các Node trong hệ thống Gateway.
 
   //- Hidden Elements & Modals
-  form(action="", method="post", id="form-delete-node", data-path-node="/node/delete")
+  form(
+    action="", 
+    method="post", 
+    id="form-delete-node", 
+    data-path-node="/node/delete"
+  )
+  //- Đặt cạnh form delete node
+  form(
+    action="" 
+    method="POST" 
+    id="form-reset-wifi" 
+    data-path-reset-node="/node/reset-wifi"
+  )
 
+  form(
+    action="" 
+    method="POST" 
+    id="form-reset-wifi-gateway" 
+    data-path-reset-gateway="/project/reset-wifi"
+  )
   script.
     const rawMapData = !{JSON.stringify(mapData || [])};
     window.allMapData = rawMapData;
@@ -252,7 +290,7 @@ block main
                 span.info-label Trạng thái
                 span.text-success.font-weight-bold 
                   i.fas.fa-check-circle.mr-1
-                  | Ổn định
+                  | Đang hoạt động
 
             .info-group.mb-4
               span.info-label 📍 Vị trí lắp đặt

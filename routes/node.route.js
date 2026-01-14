@@ -38,5 +38,5 @@ router.get('/edit/:gatewayId/:nodeId', controller.nodeEdit);
 
 router.patch('/edit/:gatewayId/:nodeId', controller.nodeEditPatch);
 
-
+router.patch('/reset-wifi/:_id', controller.resetWifi);
 module.exports = router;

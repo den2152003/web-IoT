@@ -47,7 +47,7 @@ block main
 
                                 .form-group.mt-4
                                     label.text-light.small Kết quả tìm thấy
-                                    select(name="gatewayId" id="selectGateway" class="custom-select border-0 shadow-sm" style="border-radius: 10px; height: 45px;")
+                                    select(name="gatewayId" id="selectGateway" class="custom-select select2-gateway border-0 shadow-sm" style="border-radius: 10px; height: 45px;")
                                         option(value="" disabled selected) --- Chọn Gateway ---
                                         each item in gateway 
                                             option(value=item.gatewayId) 🔗 #{item.wifiName} - #{item.gatewayId}
@@ -137,3 +137,5 @@ block main
                                         )
                                             i.fas.fa-plus-circle.mr-2
                                             | Tạo Mới Dự Án
+    
+    

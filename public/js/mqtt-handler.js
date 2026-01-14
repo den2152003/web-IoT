@@ -12,10 +12,10 @@ const typeSensor = urlParams.get("typeSensor");
 // Ánh xạ Tên Cảm biến Ngắn sang Tiêu đề và ID Canvas
 // Ánh xạ Tên Cảm biến Ngắn sang Tiêu đề và ID Canvas
 const SENSOR_MAP = {
-    't': { title: 'Biểu đồ Nhiệt độ', canvasId: 'temperatureChart', valueId: 'temperature-value', unit: '°C', type: 'temperature' },
-    'h': { title: 'Biểu đồ Độ ẩm', canvasId: 'humidityChart', valueId: 'humidity-value', unit: '%', type: 'humidity' },
-    'l': { title: 'Biểu đồ Ánh sáng', canvasId: 'lightChart', valueId: 'light-value', unit: 'Lux', type: 'light' },
-    'q': { title: 'Biểu đồ AQI', canvasId: 'aqiChart', valueId: 'aqi-value', unit: 'µg/m³', type: 'airQuality' },
+    'temperature': { title: 'Biểu đồ Nhiệt độ', canvasId: 'temperatureChart', valueId: 'temperature-value', unit: '°C', type: 'temperature' },
+    'humidity': { title: 'Biểu đồ Độ ẩm', canvasId: 'humidityChart', valueId: 'humidity-value', unit: '%', type: 'humidity' },
+    'light': { title: 'Biểu đồ Ánh sáng', canvasId: 'lightChart', valueId: 'light-value', unit: 'Lux', type: 'light' },
+    'air': { title: 'Biểu đồ AQI', canvasId: 'aqiChart', valueId: 'aqi-value', unit: 'µg/m³', type: 'airQuality' },
 };
 
 // Khởi tạo các đối tượng biểu đồ
@@ -98,10 +98,10 @@ function masterMessageHandler(message) {
 
 function getChartColor(sensorName, opacity = 1) {
     switch (sensorName) {
-        case 't': return `rgba(255, 99, 132, ${opacity})`; // Đỏ
-        case 'h': return `rgba(54, 162, 235, ${opacity})`; // Xanh dương
-        case 'l': return `rgba(255, 206, 86, ${opacity})`; // Vàng
-        case 'q': return `rgba(75, 192, 192, ${opacity})`; // Xanh ngọc
+        case 'temperature': return `rgba(255, 99, 132, ${opacity})`; // Đỏ
+        case 'humidity': return `rgba(54, 162, 235, ${opacity})`; // Xanh dương
+        case 'light': return `rgba(255, 206, 86, ${opacity})`; // Vàng
+        case 'air': return `rgba(75, 192, 192, ${opacity})`; // Xanh ngọc
         default: return `rgba(150, 150, 150, ${opacity})`;
     }
 }
@@ -259,7 +259,7 @@ function initAllCharts() {
     const chartType = urlParams.get("typeChart") || "now";
 
     // Danh sách các khóa cảm biến (t, h, l, q)
-    const allSensorKeys = ['t', 'h', 'l', 'q'];
+    const allSensorKeys = ['temperature', 'humidity', 'light', 'air'];
 
     // Nếu đang ở chế độ NOW, chúng ta chỉ cần khởi tạo biểu đồ trống
     if (chartType === 'now') {
@@ -292,10 +292,10 @@ function initAllCharts() {
                 const newChartInstance = initChart(sensorInfo.canvasId, sensorData, sensorInfo.title);
 
                 // Gán instance cho biến toàn cục
-                if (key === 't') temperatureChartInstance = newChartInstance;
-                else if (key === 'h') humidityChartInstance = newChartInstance;
-                else if (key === 'l') lightChartInstance = newChartInstance;
-                else if (key === 'q') aqiChartInstance = newChartInstance;
+                if (key === 'temperature') temperatureChartInstance = newChartInstance;
+                else if (key === 'humidity') humidityChartInstance = newChartInstance;
+                else if (key === 'light') lightChartInstance = newChartInstance;
+                else if (key === 'air') aqiChartInstance = newChartInstance;
             }
         });
 

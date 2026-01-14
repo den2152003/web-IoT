@@ -71,7 +71,8 @@ module.exports.nodeCreatePost = async (req, res) => {
             nodeName: req.body.nodeName,
             description: req.body.description,
             address: req.body.address,
-            positionGateway: gateway.position
+            positionGateway: gateway.position,
+            deleted: false
         })
 
     console.log(user);
@@ -577,3 +578,28 @@ module.exports.nodeEditPatch = async (req, res) => {
 
     res.redirect(`/project/manage/${gatewayId}`);
 }
+
+//[PATCH] /node/reset-wifi/:_id
+module.exports.resetWifi = async (req, res) => {
+    
+    const find = {
+        deleted: false,
+        _id: req.params._id,
+    };
+
+    const node = await Node.findOne(find);
+
+    const topic = `node/resetwifi/${node.nodeId}`;
+    const message = JSON.stringify({
+        cmd: "RESET_WIFI",
+        nodeId: node.nodeId
+    });
+
+    // Publish lệnh tới Broker
+    mqttClient.publish(topic, message);
+    
+    req.flash("success", `Đã reset thành công node ${node.nodeId}`);
+    backURL = req.header('Referer') || '/';
+    // do your thang
+    res.redirect(backURL);
+};

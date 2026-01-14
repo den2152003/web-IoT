@@ -49,6 +49,53 @@ if (buttonDeleteNode.length > 0) {
 }
 // End Delete Item Node
 
+// Reset WiFi
+const buttonsResetWifi = document.querySelectorAll("[button-reset-wifi]");
+if (buttonsResetWifi.length > 0) {
+    const formResetWifi = document.querySelector("#form-reset-wifi");
+    const path = formResetWifi.getAttribute("data-path-reset-node");
+
+    buttonsResetWifi.forEach(button => {
+        button.addEventListener("click", () => {
+            const isConfirm = confirm("Bạn có chắc chắn muốn xóa cấu hình WiFi và khởi động lại Node này không?");
+            if (isConfirm) {
+                const idNode = button.getAttribute("data-id-node");
+                const action = `${path}/${idNode}?_method=PATCH`; // Hoặc POST tùy bạn thiết lập ở Backend
+                formResetWifi.action = action;
+                formResetWifi.submit();
+            }
+        });
+    });
+}
+// End Reset WiFi
+
+// Reset WiFi Gateway
+const buttonResetWifiGateway = document.querySelectorAll("[button-reset-wifi-gateway]");
+
+if (buttonResetWifiGateway.length > 0) {
+  const formResetWifiGateway = document.querySelector("#form-reset-wifi-gateway");
+  const path = formResetWifiGateway.getAttribute("data-path-reset-gateway");
+
+  buttonResetWifiGateway.forEach((button) => {
+    button.addEventListener("click", () => {
+      const isConfirm = confirm("Bạn có chắc chắn muốn Reset cấu hình WiFi của Gateway này không? Thiết bị sẽ khởi động lại!");
+
+      if (isConfirm) {
+        const idGateway = button.getAttribute("data-id-gateway");
+        const gatewayId = button.getAttribute("data-gateway-id");
+
+        // Thêm ?_method=PATCH nếu bạn dùng middleware method-override ở Backend
+        // Điều này giúp đồng bộ với cách bạn làm ở phần Reset WiFi Node bên trên
+        const action = `${path}/${gatewayId}?_method=PATCH`;
+        
+        formResetWifiGateway.action = action;
+        formResetWifiGateway.submit();
+      }
+    });
+  });
+}
+// End Reset WiFi Gateway
+
 // Delete Item device
 const buttonDeleteDevice = document.querySelectorAll("[button-delete-device]");
 console.log(buttonDeleteDevice);

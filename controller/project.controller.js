@@ -29,8 +29,7 @@ module.exports.project = async (req, res) => {
 
     const objectSearch = searchHelper(req.query);
 
-    if(objectSearch.reg)
-    {
+    if (objectSearch.reg) {
         find.projectName = objectSearch.reg;
     }
 
@@ -42,7 +41,7 @@ module.exports.project = async (req, res) => {
 
     paginationHelper(objectPagination, req.query, countProduct);
 
-    const gateway = await Gateway.find(find).sort({ position : "desc"}).limit(objectPagination.limitItem).skip(objectPagination.skip);
+    const gateway = await Gateway.find(find).sort({ position: "desc" }).limit(objectPagination.limitItem).skip(objectPagination.skip);
 
     res.render("pages/projects/projects", {
         pageTitle: "Dự án",
@@ -57,7 +56,7 @@ module.exports.project = async (req, res) => {
 module.exports.create = async (req, res) => {
     const wifiName = req.query.wifiName;
 
-    const gateway = await Gateway.find({ wifiName }).sort({ position : "desc"});
+    const gateway = await Gateway.find({ wifiName }).sort({ position: "desc" });
 
     res.render("pages/projects/projectCreate", {
         pageTitle: "Thêm mới dự án",
@@ -165,64 +164,85 @@ module.exports.editPatch = async (req, res) => {
 //[GET] /project/manage/:id
 module.exports.manage = async (req, res) => {
     const idGateway = req.params.id;
-
-    let mapData = [];
-
     const tokenUser = req.cookies.tokenUser;
 
     const user = await User.findOne({ tokenUser });
-
     const gateway = await Gateway.findOne({ gatewayId: idGateway });
 
-    const nodesAddress = await Node.find({gatewayId: idGateway});
+    if (!gateway) return res.redirect("back");
 
-    if (gateway && gateway.address) {
-        mapData.push({ 
-            name: gateway.projectName, 
-            address: gateway.address, 
-            isGateway: true 
-        });
-    }
-    
-    nodesAddress.forEach(node => {
-        if (node.address) {
-            mapData.push({ 
-                name: node.nodeName, 
-                address: node.address, 
-                isGateway: false 
-            });
-        }
-    });
-
+    // ĐIỀU KIỆN CHUNG: Thuộc gateway này VÀ chưa bị xóa
     const find = {
-        userId: user._id,
         gatewayId: gateway.gatewayId,
         deleted: false
     };
 
+    // Hỗ trợ tìm kiếm theo tên node
     const objectSearch = searchHelper(req.query);
-
-    if(objectSearch.reg)
-    {
+    if (objectSearch.reg) {
         find.nodeName = objectSearch.reg;
     }
 
-    let objectPagination = {
-        currentPage: 1,
-        limitItem: 4
-    };
-    const countProduct = await Node.countDocuments(find);
+    // --- XỬ LÝ DỮ LIỆU BẢN ĐỒ (mapData) ---
+    let mapData = [];
 
-    paginationHelper(objectPagination, req.query, countProduct);
+    // 1. Thêm Gateway vào map (Gateway luôn hiển thị)
+    if (gateway.address) {
+        mapData.push({
+            name: gateway.projectName,
+            address: gateway.address,
+            isGateway: true
+        });
+    }
 
-    const node = await Node.find(find).sort({ position : "desc"}).limit(objectPagination.limitItem).skip(objectPagination.skip);
+    // 2. Chỉ lấy các Node ACTIVE (deleted: false) để vẽ lên map
+    const allActiveNodes = await Node.find(find).select("nodeName address");
+
+    allActiveNodes.forEach(node => {
+        if (node.address) {
+            mapData.push({
+                name: node.nodeName,
+                address: node.address,
+                isGateway: false
+            });
+        }
+    });
+
+    // --- XỬ LÝ PHÂN TRANG CHO DANH SÁCH BÊN DƯỚI ---
+    let objectPagination = { currentPage: 1, limitItem: 4 };
+    const countNodes = await Node.countDocuments(find); // Chỉ đếm node chưa xóa
+    paginationHelper(objectPagination, req.query, countNodes);
+
+    const nodes = await Node.find(find)
+        .sort({ position: "desc" })
+        .limit(objectPagination.limitItem)
+        .skip(objectPagination.skip);
 
     res.render("pages/projects/manage", {
         pageTitle: "Quản lý dự án",
         gateway: gateway,
         keyword: objectSearch.keyword,
-        node: node,
-        mapData: mapData,
+        node: nodes,
+        mapData: mapData, // Dữ liệu sạch, không chứa node deleted
         pagination: objectPagination
     });
 }
+
+//[PATCH] /gateway/reset-wifi/:gatewayId
+module.exports.resetWifi = async (req, res) => {
+
+
+    const topic = `gateway/resetwifi/${req.params.gatewayId}`;
+    const message = JSON.stringify({
+        cmd: "RESET_WIFI",
+        gatewayId: req.params.gatewayId
+    });
+
+    // Publish lệnh tới Broker
+    mqttClient.publish(topic, message);
+
+    req.flash("success", `Đã reset thành công node ${req.params.gatewayId}`);
+    backURL = req.header('Referer') || '/';
+    // do your thang
+    res.redirect(backURL);
+};
