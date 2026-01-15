@@ -32,11 +32,11 @@ const initMqttClient = () => {
                 await Sensor.insertMany(sensorRecords);
 
                 // Map đúng tên condition
-                const sensorMap = { 
-                    temperature: t, 
-                    humidity: h, 
-                    light: l, 
-                    air: q 
+                const sensorMap = {
+                    temperature: t,
+                    humidity: h,
+                    light: l,
+                    air: q
                 };
 
                 const conditions = await Condition.find({
@@ -45,30 +45,66 @@ const initMqttClient = () => {
                     deleted: false
                 });
 
+                // Hàm đảo trạng thái ON <-> OFF
+                const reverseStatus = (status) => {
+                    return status === "on" ? "off" : "on";
+                };
+
                 for (const cond of conditions) {
 
                     const value = sensorMap[cond.sensorName];
                     if (value === undefined) continue;
 
-                    let trigger = false;
+                    // Ép kiểu cho chắc
+                    const max = cond.valueMax != null ? Number(cond.valueMax) : null;
+                    const min = cond.valueMin != null ? Number(cond.valueMin) : null;
 
-                    if (cond.valueMax != null && value >= cond.valueMax) trigger = true;
-                    if (cond.valueMin != null && value <= cond.valueMin) trigger = true;
+                    const overMax = max !== null && value >= max;
+                    const belowMin = min !== null && value <= min;
+                    const isOver = overMax || belowMin;
 
-                    if (trigger) {
-                        const topicDevice = `control/${gatewayID}`;
-                        const payload = {
+                    const topicDevice = `control/${gatewayID}`;
+
+                    // 🔥 VƯỢT NGƯỠNG → DÙNG cond.status
+                    if (isOver && !cond.isTriggered) {
+
+                        const payloadOn = {
                             cmd: "control",
                             nodeId: Id,
                             nodePosition: cond.nodePosition,
                             pin: cond.pinDevice,
-                            status: cond.status
+                            status: cond.status,
+                            buzzer: "on"
                         };
 
-                        client.publish(topicDevice, JSON.stringify(payload));
-                        console.log("⚡ Điều khiển thiết bị:", payload);
+                        client.publish(topicDevice, JSON.stringify(payloadOn));
+                        console.log("🔔 DEVICE ON:", payloadOn);
+
+                        cond.isTriggered = true;
+                        await cond.save();
+                    }
+
+                    // 🧊 HẾT VƯỢT NGƯỠNG → STATUS NGƯỢC LẠI
+                    if (!isOver && cond.isTriggered) {
+
+                        const payloadOff = {
+                            cmd: "control",
+                            nodeId: Id,
+                            nodePosition: cond.nodePosition,
+                            pin: cond.pinDevice,
+                            status: reverseStatus(cond.status),
+                            buzzer: "off"
+                        };
+
+                        client.publish(topicDevice, JSON.stringify(payloadOff));
+                        console.log("🔕 DEVICE OFF:", payloadOff);
+
+                        cond.isTriggered = false;
+                        await cond.save();
                     }
                 }
+
+
 
             } catch (err) {
                 console.error(' MQTT message error:', err);

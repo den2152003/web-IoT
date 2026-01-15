@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const conditionSchema = new mongoose.Schema(
     {
-        gatewayId:String,
+        gatewayId: String,
 
         nodeId: String,
 
@@ -20,9 +20,14 @@ const conditionSchema = new mongoose.Schema(
 
         valueMin: Number,
 
-        status : String,
+        status: String,
 
         position: Number,
+
+        isTriggered: {
+            type: Boolean,
+            default: false
+        },
 
         deleted: {
             type: Boolean,
