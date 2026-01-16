@@ -1,6 +1,6 @@
 import { mqttClient } from './mqtt-client.js';
 
-const UPDATE_INTERVAL_MS = 5 * 60 * 1000; // 5 phút * 60 giây * 1000 mili giây
+const UPDATE_INTERVAL_MS =  10 * 1000; // 5 phút * 60 giây * 1000 mili giây
 let lastUpdateTime = 0; // Mốc thời gian (timestamp) của lần cập nhật biểu đồ cuối cùng
 
 const MAX_DATA_POINTS = 20; // Số lượng điểm dữ liệu tối đa hiển thị trên biểu đồ
