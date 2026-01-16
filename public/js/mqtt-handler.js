@@ -10,7 +10,6 @@ const typeChart = urlParams.get("typeChart") || "now";
 const typeSensor = urlParams.get("typeSensor");
 
 // Ánh xạ Tên Cảm biến Ngắn sang Tiêu đề và ID Canvas
-// Ánh xạ Tên Cảm biến Ngắn sang Tiêu đề và ID Canvas
 const SENSOR_MAP = {
     'temperature': { title: 'Biểu đồ Nhiệt độ', canvasId: 'temperatureChart', valueId: 'temperature-value', unit: '°C', type: 'temperature' },
     'humidity': { title: 'Biểu đồ Độ ẩm', canvasId: 'humidityChart', valueId: 'humidity-value', unit: '%', type: 'humidity' },
