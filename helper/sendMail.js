@@ -1,16 +1,15 @@
 const nodemailer = require('nodemailer');
 
-module.exports.sendMail = (email, subject, html) => {
+module.exports.sendMail = async (email, subject, html) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // Sử dụng SSL cho cổng 465
+    secure: true, 
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD // Bắt buộc phải là App Password (16 ký tự)
+      pass: process.env.EMAIL_PASSWORD 
     },
     tls: {
-      // Giúp vượt qua một số rào cản về chứng chỉ trên môi trường server
       rejectUnauthorized: false
     }
   });
@@ -26,11 +25,13 @@ module.exports.sendMail = (email, subject, html) => {
     html: html
   };
 
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log("Lỗi gửi mail:", error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
+  // Sử dụng try...catch để await kết quả
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent thành công: ' + info.response);
+    return info;
+  } catch (error) {
+    console.log("Lỗi gửi mail cụ thể:", error);
+    throw error; // Quăng lỗi ra để hàm gọi nó có thể xử lý (ví dụ trả về 500)
+  }
 };
