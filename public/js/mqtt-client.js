@@ -76,7 +76,7 @@ const mqttClient = (function () {
     }
 
     // Thêm hàm gửi tin nhắn
-    function publish(topic, payload, qos = 0, retained = false) {
+    function publish(topic, payload, qos = 1, retained = true) {
         if (client.isConnected()) {
             const message = new Paho.MQTT.Message(payload);
             message.destinationName = topic;

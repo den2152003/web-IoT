@@ -456,7 +456,7 @@ module.exports.changeMultiPatch = async (req, res) => {
             });
 
             // Publish lệnh điều khiển
-            mqttClient.publish(topic, payload, { qos: 1, retain: false });
+            mqttClient.publish(topic, payload, { qos: 1, retain: true });
             console.log(`Published to ${topic}: ${payload}`);
             await new Promise(resolve => setTimeout(resolve, 100));
         };
