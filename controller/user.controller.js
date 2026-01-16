@@ -186,7 +186,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
         Mã OTP xác minh lấy lại mật khẩu là <b>${otp}. Thời hạn sử dụng là 5 phút. Lưu ý không được để lộ mã OTP.
     `;
 
-    await sendMailHelper.sendMail(email, subject, html);
+    sendMailHelper.sendMail(email, subject, html);
 
     res.redirect(`/user/password/otp?email=${email}`)
 }
