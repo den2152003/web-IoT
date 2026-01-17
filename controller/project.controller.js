@@ -81,7 +81,6 @@ module.exports.createPost = async (req, res) => {
     await Gateway.updateOne(
         {
             gatewayId: gatewayId,
-            deleted: false
         }, // điều kiện tìm
         {
             userId: user._id,
@@ -90,6 +89,7 @@ module.exports.createPost = async (req, res) => {
             description: description,
             address: address,
             nodeNumber: countNode,
+            deleted: false,
             updatedAt: new Date() // có thể thêm thời gian cập nhật
             // position: countGateways + 1
         }
