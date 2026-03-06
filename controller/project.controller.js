@@ -1,4 +1,3 @@
-const md5 = require("md5");
 const User = require('../model/user.model');
 const Gateway = require("../model/gateway.model");
 const Node = require("../model/node.model");

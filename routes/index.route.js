@@ -6,7 +6,6 @@ const nodesRoutes = require("./node.route");
 
 const userMiddleWare = require("../middlewares/user.middleware");
 
-
 module.exports = (app) => {
     app.use(userMiddleWare.infoUser);
     
@@ -18,6 +17,4 @@ module.exports = (app) => {
 
     app.use("/node",  nodesRoutes);
 
-    
-    
 };

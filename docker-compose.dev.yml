@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  app:
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    # Sử dụng nodemon --inspect như trong package.json của bạn
+    command: npm start

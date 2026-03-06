@@ -46,5 +46,5 @@ app.use(express.static(`${__dirname}/public`));
 route(app);
 
 app.listen(port, () => {
-    console.log("sucess sadsadsadsadsad");
+    console.log("sucessfully connected to server");
 })

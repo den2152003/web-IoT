@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    container_name: doan_backend
+    restart: always
+    env_file:
+      - .env
+    # Các thông số MQTT/Atlas sẽ được lấy từ file .env của bạn

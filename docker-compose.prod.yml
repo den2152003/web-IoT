@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  app:
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+    # Chạy lệnh node index.js trực tiếp (tối ưu nhất)
+    command: npm run start:prod

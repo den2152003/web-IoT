@@ -2,7 +2,7 @@ module.exports.createProject =  (req, res, next) => {
  
     if(!req.body.projectName){
         req.flash("error", "Vui lòng nhập tên dự án");
-        backURL=req.header('Referer') || '/';
+        let backURL=req.header('Referer') || '/';
         // do your thang
         res.redirect(backURL);
         return;
@@ -10,7 +10,7 @@ module.exports.createProject =  (req, res, next) => {
 
     if(!req.body.gatewayName){
         req.flash("error", "Vui lòng nhập tên gateway");
-        backURL=req.header('Referer') || '/';
+        let backURL=req.header('Referer') || '/';
         // do your thang
         res.redirect(backURL);
         return;
@@ -18,7 +18,7 @@ module.exports.createProject =  (req, res, next) => {
 
     if(!req.body.address){
         req.flash("error", "Vui lòng nhập địa chỉ");
-        backURL=req.header('Referer') || '/';
+        let backURL=req.header('Referer') || '/';
         // do your thang
         res.redirect(backURL);
         return;

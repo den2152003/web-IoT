@@ -1,4 +1,3 @@
-const md5 = require("md5");
 const User = require('../model/user.model');
 const Gateway = require("../model/gateway.model");
 const Node = require("../model/node.model");
@@ -20,22 +19,6 @@ const mqttClient = mqtt.connect("mqtts://42684cb82de64c2889b9699ce38e5c32.s1.eu.
 
 mqttClient.on("connect", () => { });
 
-const getStartTime = (type) => {
-    const now = new Date();
-    switch (type) {
-        case 'hour':
-            // 24 giờ trước
-            return new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        case 'day':
-            // 7 ngày trước (cho biểu đồ 4 điểm/ngày trong 7 ngày)
-            return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        case 'month':
-            // 30 ngày trước
-            return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        default:
-            return new Date(0);
-    }
-};
 
 //[GET] /node/create
 module.exports.nodeCreate = async (req, res) => {
