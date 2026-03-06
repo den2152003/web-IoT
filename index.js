@@ -10,7 +10,7 @@ require("dotenv").config();
 
 const route = require("./routes/index.route");
 
-const database = require("./config/database");
+const database = require("./config/database";
 
 const initMqttEspGateway = require("./mqtt/mqtt.js");
 const initMqttEspNode = require("./mqtt/mqtt-node.js");
